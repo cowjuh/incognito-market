@@ -10,15 +10,6 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model Post {
-  id        String  @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User?@relation(fields:[authorId], references:[id])
-  authorId  String?
-}
-
 model Account {
   id                 String  @id @default(cuid())
   userId             String  @map("user_id")
@@ -46,17 +37,17 @@ model Session {
   userId       String   @map("user_id")
   expires      DateTime
   user         User     @relation(fields:[userId], references:[id], onDelete: Cascade)
-  }
+}
 
 model User {
   id            String    @id @default(cuid())
   name          String?
-  email         String?@unique
+  email         String?   @unique
   emailVerified DateTime?
   image         String?
-  posts         Post[]
   accounts      Account[]
   sessions      Session[]
+  shops         Shop[]
 }
 
 model VerificationToken {
@@ -66,4 +57,38 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum SocialMediaName {
+  INSTAGRAM
+  TWITTER
+  FACEBOOK
+  TIKTOK
+  DEPOP
+}
+
+model SocialMedia {
+  id      String         @id @default(cuid())
+  name    SocialMediaName
+  link    String
+  shopId  String
+  shop    Shop           @relation(fields: [shopId], references: [id])
+}
+
+model Shop {
+  id              String        @id @default(cuid())
+  name            String
+  websiteLink     String?
+  email           String
+  phoneNumber     String
+  bio             String?
+  description     String?
+  physicalAddress String?
+  city            String?
+  profilePicture  String?
+  displayImage    String?
+  headerImage     String?
+  ownerId         String
+  owner           User          @relation(fields: [ownerId], references: [id])
+  socialMedia     SocialMedia[]
 }
