@@ -1,9 +1,14 @@
-import React, { useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import Layout from "../components/Layout"
 import { PostProps } from "../components/Post"
-import supabase, { SupabaseStorageUploadResponse } from '../utils/supabaseClient';
+import supabase, { SupabaseStorageUploadResponse, deleteImage } from '../utils/supabase/supabaseClient';
 import Image from "next/image";
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Shop } from '@prisma/client'
+import { getShops } from "../services/api/shops";
+import { formatPublicUrl } from "../utils/supabase/supabaseHelpers";
+import { getShop, updateShop } from '../services/api/shop';
+import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
 
 const prisma = new PrismaClient()
 
@@ -13,11 +18,21 @@ type Props = {
 
 const Blog: React.FC<Props> = () => {
   const fileInput = useRef(null);
-  const data = supabase.storage.from('media').getPublicUrl('users/6D167EFA-237A-4BF4-B4CE-D15BFA66B189.JPG')
 
   const handleUpload = async () => {
     const file = fileInput.current.files[0];
-    const filePath = `users/${file.name}`;
+    const uniqueId = uuidv4();
+    const uniqueFilename = `${uniqueId}-${file.name}`;
+    const filePath = `users/${uniqueFilename}`;
+    const shop: Shop = await getShop('clufxw74e00014fxsthgnbfd7')
+    console.log('the shoppp', shop)
+
+    if (!shop) {
+      console.error('Shop not found');
+      return;
+    }
+    const oldProfilePicturePublicURL = shop.profilePicture;
+    console.log('oldProfilePicturePublicURL', oldProfilePicturePublicURL)
 
     if (file) {
       let { error, data } = await supabase.storage.from('media').upload(filePath, file);
@@ -25,41 +40,63 @@ const Blog: React.FC<Props> = () => {
         console.error('Error uploading file: ', error);
       } else {
         const uploadData = data as SupabaseStorageUploadResponse;
+        const timestampedPath = uploadData.path
         console.log('File uploaded successfully', uploadData);
-        // Construct the public URL of the uploaded file
-        const publicURL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/${uploadData.fullPath}`;
+
+        const publicURL = formatPublicUrl('media', uploadData.path);
+        console.log('publicURL', publicURL)
 
         // Update the Shop record with the new image path
-        const response = await fetch('/api/shop', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: 'clufxw74e00014fxsthgnbfd7',
-            publicUrl: publicURL,
-          }),
-        });
-
-        if (!response.ok) {
-          console.error('Error updating Shop: ', await response.text());
-        } else {
-          const responseData = await response.json();
+        try {
+          const responseData = await updateShop('clufxw74e00014fxsthgnbfd7', { profilePicture: publicURL });
           console.log('Response data: ', responseData);
+
+          // Delete the old profile picture
+          if (oldProfilePicturePublicURL) {
+            const filename = path.basename(oldProfilePicturePublicURL);
+            console.log('filename', filename)
+            await deleteImage(`users/${filename}`);
+          }
+        } catch (error) {
+          console.error('Error updating Shop: ', error);
         }
       }
     }
   };
 
+  const [shops, setShops] = useState<Shop[]>([]);
+
+  useEffect(() => {
+    const fetchShops = async () => {
+      try {
+        const data = await getShops();
+        console.log('Shops: ', data.shops)
+        setShops(data.shops);
+      } catch (error) {
+        console.error('Error fetching shops: ', error);
+      }
+    };
+
+    fetchShops();
+  }, []);
 
   return (
     <Layout>
       <div className="page">
         <h1>Public Feed</h1>
         <main>
-          <Image src={data.data.publicUrl} alt="Picture of the author" width={500} height={500} className="w-[200px] h-auto rounded-sm" />
           <input type="file" ref={fileInput} />
           <button onClick={handleUpload}>Upload image</button>
+          <div>
+            {shops.map((shop) => (
+              <div key={shop.id}>
+                <h2>{shop.name}</h2>
+                <p>{shop.description}</p>
+                <div className="text-xs">{shop.profilePicture}</div>
+                <Image src={shop.profilePicture} alt="Picture of the author" width={500} height={500} className="w-[200px] h-auto rounded-sm" />
+              </div>
+            ))}
+          </div>
         </main>
       </div>
     </Layout>
