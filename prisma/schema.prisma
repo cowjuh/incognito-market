@@ -86,7 +86,6 @@ model Shop {
   physicalAddress String?
   city            String?
   profilePicture  String?
-  displayImage    String?
   headerImage     String?
   ownerId         String
   owner           User          @relation(fields: [ownerId], references: [id])
