@@ -9,7 +9,7 @@ type ResponseData = {
 
 export default async function handler(
     req: NextApiRequest,
-    res: NextApiResponse<ResponseData>
+    res: NextApiResponse<ResponseData | Shop>
 ) {
     if (req.method === 'POST') {
         const body = req.body;
@@ -42,7 +42,7 @@ export default async function handler(
             if (!shop) {
                 res.status(404).json({ message: 'Shop not found' });
             } else {
-                res.status(200).json({ message: 'Shop found' });
+                res.status(200).json(shop);
             }
         } catch (error) {
             res.status(500).json({ message: 'Error getting Shop: ' + error.message });
