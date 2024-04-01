@@ -1,12 +1,21 @@
 import { SessionProvider } from 'next-auth/react';
 import { AppProps } from 'next/app';
 import "../styles/globals.css";
+import MainLayout from '../layout/MainLayout';
+import { NextPageWithLayout } from '../layout/NextPageWithLayout';
 
-const App = ({ Component, pageProps }: AppProps) => {
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
+function App({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
     <SessionProvider session={pageProps.session}>
-      <Component {...pageProps} />
+      {getLayout(
+        <Component {...pageProps} />
+      )}
     </SessionProvider>
   );
 };
