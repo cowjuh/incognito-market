@@ -1,7 +1,6 @@
 import { SessionProvider } from 'next-auth/react';
 import { AppProps } from 'next/app';
 import "../styles/globals.css";
-import MainLayout from '../layout/MainLayout';
 import { NextPageWithLayout } from '../layout/NextPageWithLayout';
 
 type AppPropsWithLayout = AppProps & {
