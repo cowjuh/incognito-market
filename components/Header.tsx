@@ -31,11 +31,6 @@ const Header: React.FC = () => {
     right = (
       <div className="right">
         <p>Validating session ...</p>
-        <style jsx>{`
-          .right {
-            margin-left: auto;
-          }
-        `}</style>
       </div>
     );
   }
@@ -79,16 +74,10 @@ const Header: React.FC = () => {
   }
 
   return (
-    <nav className='flex items-center w-full justify-between'>
-      {left}
-      {right}
-      <style jsx>{`
-        nav {
-          display: flex;
-          padding: 2rem;
-          align-items: center;
-        }
-      `}</style>
+    <nav className='flex items-center w-full justify-between px-4 py-2 border-b sticky top-0'>
+      <Link href="/" data-active={isActive('/')}>
+        4o4.space
+      </Link>
     </nav>
   );
 };
