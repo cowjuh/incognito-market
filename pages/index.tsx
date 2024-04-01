@@ -4,8 +4,8 @@ import { useShops } from "../hooks/useShops";
 import { useRouter } from "next/router";
 import MainLayout from "../layout/MainLayout";
 import PaddedLayout from "../layout/PaddedLayout";
-import Avatar from "@/Avatar";
 import ShopPreviewCard from "@/shop/ShopPreviewCard";
+import { formatPlural } from "utils/stringUtils";
 
 type Props = {
   feed: PostProps[]
@@ -21,10 +21,15 @@ const Home: React.FC<Props> = () => {
       <main>
         <div>
           {shopsLoading && <p>Loading...</p>}
-          <PaddedLayout className="grid grid-cols-3 gap-4">
-            {shops.map((shop) => (
-              <ShopPreviewCard key={shop.id} shop={shop} />
-            ))}
+          <PaddedLayout >
+            <div>
+              {formatPlural(shops.length, 'shop', 'shops')}
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              {shops.map((shop) => (
+                <ShopPreviewCard key={shop.id} shop={shop} />
+              ))}
+            </div>
           </PaddedLayout>
         </div>
       </main>
