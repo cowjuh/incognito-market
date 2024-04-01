@@ -1,8 +1,13 @@
+import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 
-const PaddedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
+interface PaddedLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
+    children: ReactNode
+}
+
+const PaddedLayout: React.FC<PaddedLayoutProps> = ({ children, className, ...props }) => {
     return (
-        <div className="p-4 w-full h-full flex flex-col">
+        <div className={cn("p-4 w-full h-full flex flex-col", className)}>
             {children}
         </div>
     )
