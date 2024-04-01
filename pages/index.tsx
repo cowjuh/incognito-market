@@ -24,7 +24,7 @@ const Home: React.FC<Props> = () => {
         <FullWidthLayout className="flex flex-row divide-x flex-grow">
           <FilterPanel />
           <div className="flex flex-col p-4 gap-2">
-            <div className=" text-gray-400">
+            <div className=" text-neutral-400">
               {formatPlural(shops.length, 'shop', 'shops')}
             </div>
             <div className="grid grid-cols-3 gap-4">
