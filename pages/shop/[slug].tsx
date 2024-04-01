@@ -5,6 +5,7 @@ import MainLayout from "../../layout/MainLayout";
 import { ReactNode } from "react";
 import { NextPageWithLayout } from "../../layout/NextPageWithLayout";
 import PaddedLayout from "../../layout/PaddedLayout";
+import Link from "next/link";
 
 const ShopPage: NextPageWithLayout = () => {
     const router = useRouter();
@@ -13,6 +14,9 @@ const ShopPage: NextPageWithLayout = () => {
 
     return (
         <div>
+            <Link href={`/`}>
+                Back
+            </Link>
             <h1>Shop: {slug}</h1>
             {shop &&
                 <div>
