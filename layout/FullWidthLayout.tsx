@@ -7,7 +7,7 @@ interface FullWidthLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const FullWidthLayout: React.FC<FullWidthLayoutProps> = ({ children, className, ...props }) => {
     return (
-        <div className={cn("py-4 w-full flex-grow h-full flex flex-col", className)} {...props}>
+        <div className={cn("w-full flex-grow h-full flex flex-col", className)} {...props}>
             {children}
         </div>
     )

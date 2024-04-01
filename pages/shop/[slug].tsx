@@ -33,6 +33,7 @@ const ShopPage: NextPageWithLayout = () => {
                             </div>
                             <div>
                                 <h3 className="font-medium text-gray-400">CONTACT</h3>
+                                <p>{shop.websiteLink}</p>
                                 <p>{shop.email}</p>
                                 <p>{shop.phoneNumber}</p>
                             </div>
