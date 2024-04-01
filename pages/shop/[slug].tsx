@@ -4,6 +4,7 @@ import Image from "next/image";
 import MainLayout from "../../layout/MainLayout";
 import { ReactNode } from "react";
 import { NextPageWithLayout } from "../../layout/NextPageWithLayout";
+import PaddedLayout from "../../layout/PaddedLayout";
 
 const ShopPage: NextPageWithLayout = () => {
     const router = useRouter();
@@ -28,7 +29,9 @@ const ShopPage: NextPageWithLayout = () => {
 ShopPage.getLayout = function getLayout(page: ReactNode) {
     return (
         <MainLayout>
-            {page}
+            <PaddedLayout>
+                {page}
+            </PaddedLayout>
         </MainLayout>
     )
 }
