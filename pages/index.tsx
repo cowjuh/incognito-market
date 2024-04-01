@@ -1,9 +1,10 @@
 import React, { useRef } from "react"
-import Layout from "../components/Layout"
 import { PostProps } from "../components/Post"
 import Image from "next/image";
 import { handleUpload } from "../services/uploadService";
 import { useShops } from "../hooks/useShops";
+import { useRouter } from "next/router";
+import MainLayout from "../layout/MainLayout";
 
 type Props = {
   feed: PostProps[]
@@ -12,15 +13,20 @@ type Props = {
 const Blog: React.FC<Props> = () => {
   const fileInput = useRef(null);
   const { shops, loading: shopsLoading, error: shopsError } = useShops();
+  const router = useRouter();
 
   return (
-    <Layout>
+    <MainLayout>
       <div className="page">
         <main>
           <div>
             {shopsLoading && <p>Loading...</p>}
             {shops.map((shop) => (
-              <div key={shop.id} className="border rounded-md p-2 flex flex-col gap-2">
+              <div
+                onClick={() => router.push(`/shop/${shop.id}`)}
+                key={shop.id}
+                className="border rounded-md p-2 flex flex-col gap-2"
+              >
                 <span>{shop.name}</span>
                 <p>{shop.bio}</p>
                 <p>{shop.email}</p>
@@ -32,7 +38,7 @@ const Blog: React.FC<Props> = () => {
           </div>
         </main>
       </div>
-    </Layout>
+    </MainLayout>
   )
 }
 
