@@ -8,7 +8,7 @@ import Link from "next/link";
 import Avatar from "@/Avatar";
 import { Skeleton } from "@/ui/skeleton";
 import { SocialMediaName } from "@prisma/client";
-import { InstagramLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons";
+import { ChevronLeftIcon, InstagramLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons";
 import { SiFacebook, SiTiktok } from '@icons-pack/react-simple-icons';
 
 const socialMediaIcons = {
@@ -27,8 +27,9 @@ const ShopPage: NextPageWithLayout = () => {
     return (
         <div className="max-w-[1500px] w-full">
             <div className="p-4 pb-0 w-full">
-                <Link href={`/`}>
-                    Back
+                <Link href={`/`} className="flex items-center gap-1 text-gray-500 hover:text-gray-700">
+                    <ChevronLeftIcon className="w-4 h-4" />
+                    <span>Back</span>
                 </Link>
             </div>
             <div className="flex w-full h-full">
@@ -51,7 +52,7 @@ const ShopPage: NextPageWithLayout = () => {
                                         const Icon = socialMediaIcons[social.name];
                                         return (
                                             <Link href={social.link} target="_blank" rel="noreferrer">
-                                                <Icon className="w-4 h-4 text-neutral-700" />
+                                                <Icon className="w-4 h-4 text-neutral-500 hover:text-neutral-700" />
                                             </Link>
                                         );
                                     })}
@@ -61,11 +62,16 @@ const ShopPage: NextPageWithLayout = () => {
                                 <h3 className="font-medium text-neutral-400">LOCATION</h3>
                                 <p>{shop.city}</p>
                             </div>
+                            <div>
+                                <h3 className="font-medium text-neutral-400">FOUNDED BY</h3>
+                                <p>{shop.owner.name && <p>{shop.owner.name}</p>}</p>
+
+                            </div>
                         </div>
                     }
                 </div>
                 <div className="p-4 flex flex-col gap-8 w-full">
-                    <div className="w-full">
+                    <div className="w-full flex flex-col gap-2">
                         <h3 className="font-medium text-neutral-400">ABOUT</h3>
                         <div className="max-w-[600px]">
                             {shop && !showSkeleton && shop.description}
