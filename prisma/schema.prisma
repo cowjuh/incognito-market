@@ -76,8 +76,9 @@ model SocialMedia {
 }
 
 model Shop {
-  id              String        @id @default(cuid())
+  id              String    @id @default(cuid())
   name            String
+  username        String    @unique
   websiteLink     String?
   email           String
   phoneNumber     String
