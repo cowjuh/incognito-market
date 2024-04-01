@@ -13,7 +13,7 @@ const ShopPreviewCard: React.FC<ShopPreviewCardProps> = ({ shop }) => {
         <div
             onClick={() => router.push(`/shop/${shop.id}`)}
             key={shop.id}
-            className="border rounded-md flex flex-col gap-2 p-2 cursor-pointer"
+            className="border rounded-md flex flex-col gap-2 p-2 cursor-pointer w-[250px] "
         >
             <Avatar src={shop.profilePicture || undefined} alt="Picture of the author" />
             <span>{shop.name}</span>

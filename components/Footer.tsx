@@ -1,6 +1,6 @@
 const Footer = () => {
     return (
-        <footer className='flex items-center w-full justify-between px-4 py-2 border-t h-10 text-sm text-gray-400'>
+        <footer className='flex items-center w-full justify-between px-4 py-2 border-t h-10 text-gray-400'>
             2024 • developed by Jenny Zhang
         </footer>
     );
