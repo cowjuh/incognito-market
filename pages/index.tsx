@@ -6,6 +6,8 @@ import { useShops } from "../hooks/useShops";
 import { useRouter } from "next/router";
 import MainLayout from "../layout/MainLayout";
 import PaddedLayout from "../layout/PaddedLayout";
+import Avatar from "@/Avatar";
+import ShopPreviewCard from "@/shop/ShopPreviewCard";
 
 type Props = {
   feed: PostProps[]
@@ -22,20 +24,9 @@ const Blog: React.FC<Props> = () => {
         <main>
           <div>
             {shopsLoading && <p>Loading...</p>}
-            <PaddedLayout>
+            <PaddedLayout className="grid grid-cols-3 gap-4">
               {shops.map((shop) => (
-                <div
-                  onClick={() => router.push(`/shop/${shop.id}`)}
-                  key={shop.id}
-                  className="border rounded-md flex flex-col gap-2 p-2"
-                >
-                  <span>{shop.name}</span>
-                  <p>{shop.bio}</p>
-                  <p>{shop.email}</p>
-                  <Image src={shop.profilePicture} alt="Picture of the author" width={500} height={500} className="w-[200px] h-auto rounded-sm" />
-                  {/* <input type="file" ref={fileInput} />
-                <button onClick={() => handleUpload(fileInput.current, shop.id)}>Upload image</button> */}
-                </div>
+                <ShopPreviewCard key={shop.id} shop={shop} />
               ))}
             </PaddedLayout>
           </div>
