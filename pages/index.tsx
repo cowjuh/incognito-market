@@ -3,9 +3,10 @@ import { PostProps } from "../components/Post"
 import { useShops } from "../hooks/useShops";
 import { useRouter } from "next/router";
 import MainLayout from "../layout/MainLayout";
-import PaddedLayout from "../layout/PaddedLayout";
 import ShopPreviewCard from "@/shop/ShopPreviewCard";
 import { formatPlural } from "utils/stringUtils";
+import FilterPanel from "@/FilterPanel";
+import FullWidthLayout from "layout/FullWidthLayout";
 
 type Props = {
   feed: PostProps[]
@@ -17,11 +18,12 @@ const Home: React.FC<Props> = () => {
   const router = useRouter();
 
   return (
-    <MainLayout>
-      <main>
-        <div>
-          {shopsLoading && <p>Loading...</p>}
-          <PaddedLayout >
+    <main>
+      <MainLayout>
+        {shopsLoading && <p>Loading...</p>}
+        <FullWidthLayout className="flex flex-row divide-x flex-grow">
+          <FilterPanel />
+          <div className="flex flex-col p-4">
             <div>
               {formatPlural(shops.length, 'shop', 'shops')}
             </div>
@@ -30,10 +32,10 @@ const Home: React.FC<Props> = () => {
                 <ShopPreviewCard key={shop.id} shop={shop} />
               ))}
             </div>
-          </PaddedLayout>
-        </div>
-      </main>
-    </MainLayout>
+          </div>
+        </FullWidthLayout>
+      </MainLayout>
+    </main>
   )
 }
 
