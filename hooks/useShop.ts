@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { getShop } from '../services/api/shop';
-import { Shop } from '@prisma/client';
+import { ShopWithRelations } from 'pages/api/shop';
 
 export const useShop = (shopID: string) => {
-    const [shop, setShop] = useState<Shop | null>(null);
+    const [shop, setShop] = useState<ShopWithRelations | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 

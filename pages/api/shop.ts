@@ -1,7 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient, Shop } from '@prisma/client'
+import { Prisma, PrismaClient, Shop } from '@prisma/client'
 
 const prisma = new PrismaClient()
+
+const shopWithRelations = Prisma.validator<Prisma.ShopDefaultArgs>()({
+    include: { owner: true, socialMedia: true },
+});
+
+export type ShopWithRelations = Prisma.ShopGetPayload<typeof shopWithRelations>;
 
 type ResponseData = {
     message: string
@@ -9,7 +15,7 @@ type ResponseData = {
 
 export default async function handler(
     req: NextApiRequest,
-    res: NextApiResponse<ResponseData | Shop>
+    res: NextApiResponse<ResponseData | ShopWithRelations>
 ) {
     if (req.method === 'POST') {
         const body = req.body;
@@ -38,6 +44,10 @@ export default async function handler(
             const { id } = req.query;
             const shop = await prisma.shop.findUnique({
                 where: { id: String(id) },
+                include: {
+                    owner: true,
+                    socialMedia: true,
+                },
             });
             if (!shop) {
                 res.status(404).json({ message: 'Shop not found' });

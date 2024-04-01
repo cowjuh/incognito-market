@@ -1,7 +1,8 @@
 import { Shop } from '@prisma/client';
 import axios from 'axios';
+import { ShopWithRelations } from 'pages/api/shop';
 
-export const getShop = async (id: string): Promise<Shop> => {
+export const getShop = async (id: string): Promise<ShopWithRelations> => {
     try {
         const response = await axios.get(`/api/shop?id=${id}`);
         console.log('getShop response', response)
