@@ -74,7 +74,7 @@ const Header: React.FC = () => {
   }
 
   return (
-    <nav className='flex items-center w-full justify-between px-4 py-2 border-b sticky top-0'>
+    <nav className='flex items-center w-full justify-between px-4 py-2 border-b sticky top-0 h-10'>
       <Link href="/" data-active={isActive('/')}>
         4o4.space
       </Link>

@@ -1,17 +1,21 @@
-import { ReactNode } from "react"
+import { ReactNode, HTMLAttributes } from "react";
 import Header from "@/Header";
 import Footer from "@/Footer";
 
-const MainLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
+interface MainLayoutProps extends HTMLAttributes<HTMLDivElement> {
+    children: ReactNode;
+}
+
+const MainLayout: React.FC<MainLayoutProps> = ({ children, ...props }) => {
     return (
-        <div className={"min-h-[calc(100vh)] flex flex-col"}>
+        <div className={"min-h-[calc(100vh)] h-[calc(100vh)] flex flex-col"} {...props}>
             <Header />
-            <div className="flex-grow w-full">
+            <div className="w-full flex flex-col flex-grow h-full">
                 {children}
             </div>
             <Footer />
         </div>
-    )
-}
+    );
+};
 
 export default MainLayout;

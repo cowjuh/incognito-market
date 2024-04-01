@@ -7,7 +7,7 @@ interface PaddedLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const PaddedLayout: React.FC<PaddedLayoutProps> = ({ children, className, ...props }) => {
     return (
-        <div className={cn("p-4 w-full h-full flex flex-col", className)} {...props}>
+        <div className={cn("p-4 w-full flex-grow flex flex-col", className)} {...props}>
             {children}
         </div>
     )
