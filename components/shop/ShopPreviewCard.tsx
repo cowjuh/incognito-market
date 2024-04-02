@@ -17,7 +17,7 @@ const ShopPreviewCard: React.FC<ShopPreviewCardProps> = ({ shop }) => {
         <div
             onClick={() => router.push(`/shop/${shop.id}`)}
             key={shop.id}
-            className="border rounded-md flex flex-col gap-4 py-4 cursor-pointer w-[350px]"
+            className="rounded-lg border flex flex-col gap-4 py-4 cursor-pointer w-[350px] overflow-hidden"
         >
             <div className='flex items-center gap-2 px-4'>
                 <Avatar src={shop.profilePicture || undefined} alt="Picture of the author" />
@@ -46,8 +46,8 @@ const ShopPreviewCard: React.FC<ShopPreviewCardProps> = ({ shop }) => {
             })}
             <div className='px-4 flex flex-col gap-2'>
                 <p>{shop.bio}</p>
-                <div className='flex items-center gap-1 text-gray-400'>
-                    <SewingPinIcon />
+                <div className='flex items-center gap-1 text-gray-400 text-xs'>
+                    <SewingPinIcon className='w-3 h-3' />
                     {shop.city}
                 </div>
             </div>

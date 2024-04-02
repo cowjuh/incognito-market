@@ -37,7 +37,7 @@ const ShopPage: NextPageWithLayout = () => {
             <div className="flex w-full h-full">
                 <div className="w-[20%] min-w-[300px] max-w-[400px] flex flex-col gap-4 flex-grow p-4">
                     {shop &&
-                        <div className="flex flex-col gap-6">
+                        <div className="flex flex-col gap-10">
                             <div className="flex flex-col gap-2">
                                 <Avatar src={shop.profilePicture} alt="Picture of the author" className="h-20 w-20" />
                                 <h2 className="text-lg">{shop.name}</h2>
@@ -72,7 +72,7 @@ const ShopPage: NextPageWithLayout = () => {
                         </div>
                     }
                 </div>
-                <div className="p-4 flex flex-col gap-8 w-full">
+                <div className="p-4 flex flex-col gap-10 w-full">
                     <div className="w-full flex flex-col gap-2">
                         <h3 className="font-medium text-neutral-400">ABOUT</h3>
                         <div className="max-w-[600px]">
