@@ -1,9 +1,12 @@
 import { useRouter } from 'next/router';
-import { Shop as TShop } from '@prisma/client';
 import Avatar from '@/Avatar';
+import { ShopWithRelations } from 'pages/api/shop';
+import Image from 'next/image';
+import { Prisma } from '@prisma/client';
+import { parseJson } from 'utils/prisma/prismaUtils';
 
 interface ShopPreviewCardProps {
-    shop: TShop;
+    shop: ShopWithRelations;
 }
 
 const ShopPreviewCard: React.FC<ShopPreviewCardProps> = ({ shop }) => {
@@ -13,11 +16,32 @@ const ShopPreviewCard: React.FC<ShopPreviewCardProps> = ({ shop }) => {
         <div
             onClick={() => router.push(`/shop/${shop.id}`)}
             key={shop.id}
-            className="border rounded-md flex flex-col gap-2 p-2 cursor-pointer w-[250px] "
+            className="border rounded-md flex flex-col gap-2 p-4 cursor-pointer w-[350px]"
         >
-            <Avatar src={shop.profilePicture || undefined} alt="Picture of the author" />
-            <span>{shop.name}</span>
+            <div className='flex items-center gap-2'>
+
+                <Avatar src={shop.profilePicture || undefined} alt="Picture of the author" />
+                <span>{shop.name}</span>
+            </div>
             <p>{shop.bio}</p>
+            {shop.featuredItems && shop.featuredItems.map((item, i) => {
+                return (
+                    <div className='flex items-center gap-2 overflow-x-scroll hide-scrollbar' key={i}>
+                        {parseJson<Array<any>>(item.images).map((image, i) => {
+                            return (
+                                <Image
+                                    key={i}
+                                    src={image}
+                                    alt={image.alt}
+                                    width={100}
+                                    height={100}
+                                    className='h-40 w-auto'
+                                />
+                            )
+                        })}
+                    </div>
+                )
+            })}
         </div>
     );
 };

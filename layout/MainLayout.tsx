@@ -8,7 +8,7 @@ interface MainLayoutProps extends HTMLAttributes<HTMLDivElement> {
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children, ...props }) => {
     return (
-        <div className={"min-h-[calc(100vh)] h-[calc(100vh)] flex flex-col"} {...props}>
+        <div className={"min-h-[calc(100vh)] h-full flex flex-col bg-neutral-100"} {...props}>
             <Header />
             <div className="w-full flex flex-col flex-grow h-full">
                 {children}

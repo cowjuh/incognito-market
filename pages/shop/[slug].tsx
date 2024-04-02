@@ -7,9 +7,11 @@ import { NextPageWithLayout } from "../../layout/NextPageWithLayout";
 import Link from "next/link";
 import Avatar from "@/Avatar";
 import { Skeleton } from "@/ui/skeleton";
-import { SocialMediaName } from "@prisma/client";
+import { Prisma, SocialMediaName } from "@prisma/client";
 import { ChevronLeftIcon, InstagramLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons";
 import { SiFacebook, SiTiktok } from '@icons-pack/react-simple-icons';
+import Image from "next/image";
+import { parseJson } from "utils/prisma/prismaUtils";
 
 const socialMediaIcons = {
     [SocialMediaName.INSTAGRAM]: InstagramLogoIcon,
@@ -85,12 +87,32 @@ const ShopPage: NextPageWithLayout = () => {
                             }
                         </div>
                     </div>
-                    <div>
-                        <h3 className="font-medium text-neutral-400">FEATURED ITEMS</h3>
+                    <div className="w-full flex flex-col gap-2">
+                        <h3 className="font-medium text-neutral-400">FEATURED</h3>
+                        {shop && shop.featuredItems && shop.featuredItems.map((item, i) => {
+                            return (
+                                <div className="flex items-center gap-4 flex-wrap">
+                                    {parseJson<Array<any>>(item.images).map((image, i) => {
+                                        return (
+                                            <div className="h-60">
+                                                <Image
+                                                    key={i}
+                                                    src={image}
+                                                    alt={image.alt}
+                                                    width={1000}
+                                                    height={1000}
+                                                    className="h-60 w-auto"
+                                                />
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            )
+                        })}
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 
