@@ -75,6 +75,17 @@ model SocialMedia {
   shop    Shop           @relation(fields: [shopId], references: [id])
 }
 
+model FeaturedItem {
+  id          String   @id @default(cuid())
+  images      Json     // Array of image URLs
+  link        String
+  description String?
+  price       Float
+  cta         String?  // Call To Action field
+  shopId      String
+  shop        Shop     @relation(fields: [shopId], references: [id])
+}
+
 model Shop {
   id              String    @id @default(cuid())
   name            String
@@ -91,4 +102,5 @@ model Shop {
   ownerId         String
   owner           User          @relation(fields: [ownerId], references: [id])
   socialMedia     SocialMedia[]
+  featuredItems   FeaturedItem[]
 }
