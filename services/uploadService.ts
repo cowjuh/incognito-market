@@ -4,7 +4,7 @@ import { deleteImage } from '../utils/supabase/supabaseClient';
 import supabase, { SupabaseStorageUploadResponse } from '../utils/supabase/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
-import { Shop } from '@prisma/client'
+import { ShopWithRelations } from 'pages/api/shop';
 
 export const uploadFile = async (file: File) => {
     const uniqueId = uuidv4();
@@ -40,7 +40,7 @@ export const deleteOldProfilePicture = async (oldProfilePicturePublicURL: string
 };
 
 export const handleUpload = async (file: File, shopId: string) => {
-    const shop: Shop = await getShop(shopId)
+    const shop: ShopWithRelations = await getShop(shopId)
 
     if (!shop) {
         console.error('Shop not found');

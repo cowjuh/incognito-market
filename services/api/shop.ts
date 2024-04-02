@@ -1,4 +1,3 @@
-import { Shop } from '@prisma/client';
 import axios from 'axios';
 import { ShopWithRelations } from 'pages/api/shop';
 
@@ -13,7 +12,7 @@ export const getShop = async (id: string): Promise<ShopWithRelations> => {
     }
 };
 
-export const updateShop = async (id: string, data: Partial<Shop>) => {
+export const updateShop = async (id: string, data: Partial<ShopWithRelations>) => {
     try {
         const response = await axios.post(`/api/shop`, {
             id,
