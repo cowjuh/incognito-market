@@ -27,7 +27,7 @@ const Home: React.FC<Props> = () => {
             <div className=" text-neutral-400">
               {formatPlural(shops.length, 'shop', 'shops')}
             </div>
-            <div className="grid grid-cols-3 gap-4 w-full">
+            <div className="flex flex-wrap gap-4">
               {shops.map((shop) => (
                 <ShopPreviewCard key={shop.id} shop={shop} />
               ))}

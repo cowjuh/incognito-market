@@ -17,36 +17,44 @@ const ShopPreviewCard: React.FC<ShopPreviewCardProps> = ({ shop }) => {
         <div
             onClick={() => router.push(`/shop/${shop.id}`)}
             key={shop.id}
-            className="rounded-lg border flex flex-col gap-4 py-4 cursor-pointer w-[350px] overflow-hidden"
+            className="rounded-lg border flex flex-col gap-4 py-4 cursor-pointer w-[300px] overflow-hidden justify-between"
         >
-            <div className='flex items-center gap-2 px-4'>
-                <Avatar src={shop.profilePicture || undefined} alt="Picture of the author" />
-                <div className='flex flex-col'>
-                    <span>{shop.name}</span>
-                    <span className='text-gray-400'>@{shop.username}</span>
-                </div>
-            </div>
-            {shop.featuredItems && shop.featuredItems.map((item, i) => {
-                return (
-                    <div className='flex items-center gap-2 overflow-x-scroll hide-scrollbar' key={i}>
-                        {parseJson<Array<any>>(item.images).map((image, i) => {
-                            return (
-                                <Image
-                                    key={i}
-                                    src={image}
-                                    alt={image.alt}
-                                    width={500}
-                                    height={500}
-                                    className='h-48 w-auto'
-                                />
-                            )
-                        })}
+            <div className='flex flex-col gap-4'>
+                <div className='flex items-center gap-2 px-4'>
+                    <Avatar src={shop.profilePicture || undefined} alt="Picture of the author" />
+                    <div className='flex flex-col'>
+                        <span>{shop.name}</span>
+                        <span className='text-neutral-400'>@{shop.username}</span>
                     </div>
-                )
-            })}
+                </div>
+                {shop.featuredItems && shop.featuredItems.map((item, i) => {
+                    return (
+                        <div className='flex items-center gap-2 overflow-x-scroll hide-scrollbar' key={i}>
+                            {parseJson<Array<any>>(item.images).length > 0 && parseJson<Array<any>>(item.images).map((image, i) => {
+                                return (
+                                    <Image
+                                        key={i}
+                                        src={image}
+                                        alt={image.alt}
+                                        width={500}
+                                        height={500}
+                                        className='h-48 w-auto'
+                                    />
+                                )
+                            })}
+                        </div>
+                    )
+                })}
+                {shop.featuredItems.length === 0 &&
+                    <div className="bg-neutral-200 min-h-48 w-full" />
+                }
+            </div>
+            <div className='px-4'>
+                {shop.bio && <p>{shop.bio}</p>}
+                {!shop.bio && <p className='text-neutral-400'>No bio</p>}
+            </div>
             <div className='px-4 flex flex-col gap-2'>
-                <p>{shop.bio}</p>
-                <div className='flex items-center gap-1 text-gray-400 text-xs'>
+                <div className='flex items-center gap-1 text-neutral-400 text-xs'>
                     <SewingPinIcon className='w-3 h-3' />
                     {shop.city}
                 </div>
