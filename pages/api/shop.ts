@@ -54,7 +54,24 @@ export default async function handler(
             res.status(500).json({ message: 'Error updating Shop: ' + error.message });
         }
     } else if (req.method === 'GET') {
-        // Existing GET handler code...
+        try {
+            const { id } = req.query;
+            const shop = await prisma.shop.findUnique({
+                where: { id: String(id) },
+                include: {
+                    owner: true,
+                    socialMedia: true,
+                    featuredItems: true,
+                },
+            });
+            if (!shop) {
+                res.status(404).json({ message: 'Shop not found' });
+            } else {
+                res.status(200).json(shop);
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error getting Shop: ' + error.message });
+        }
     } else {
         res.status(405).json({ message: 'Method not allowed' });
     }
