@@ -90,16 +90,18 @@ model Shop {
   id              String    @id @default(cuid())
   name            String
   username        String    @unique
-  websiteLink     String?
   email           String
   phoneNumber     String
+  ownerId         String
+  websiteLink     String?
   bio             String?
   description     String?
   physicalAddress String?
+  country         String?
+  state           String?
   city            String?
   profilePicture  String?
   headerImage     String?
-  ownerId         String
   owner           User          @relation(fields: [ownerId], references: [id])
   socialMedia     SocialMedia[]
   featuredItems   FeaturedItem[]
