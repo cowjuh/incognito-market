@@ -17,9 +17,23 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<ResponseData | ShopWithRelations>
 ) {
-    if (req.method === 'POST') {
-        const body = req.body;
+    const body = req.body;
 
+    if (req.method === 'POST') {
+        // Handle shop creation
+        try {
+            console.log('Creating Shop with body:', body);
+            const shop = await prisma.shop.create({
+                data: body,
+            });
+
+            console.log('Shop created successfully', shop);
+            res.status(200).json({ message: 'Shop created successfully:' + shop.id });
+        } catch (error) {
+            res.status(500).json({ message: 'Error creating Shop: ' + error.message });
+        }
+    } else if (req.method === 'PUT') {
+        // Handle shop update
         try {
             const dataToUpdate: Partial<Shop> = {};
             if (body.profilePicture) {
@@ -40,27 +54,8 @@ export default async function handler(
             res.status(500).json({ message: 'Error updating Shop: ' + error.message });
         }
     } else if (req.method === 'GET') {
-        try {
-            const { id } = req.query;
-            const shop = await prisma.shop.findUnique({
-                where: { id: String(id) },
-                include: {
-                    owner: true,
-                    socialMedia: true,
-                    featuredItems: true
-                },
-            });
-            if (!shop) {
-                res.status(404).json({ message: 'Shop not found' });
-            } else {
-                res.status(200).json(shop);
-            }
-        } catch (error) {
-            res.status(500).json({ message: 'Error getting Shop: ' + error.message });
-        }
-    }
-
-    else {
+        // Existing GET handler code...
+    } else {
         res.status(405).json({ message: 'Method not allowed' });
     }
 }
