@@ -78,6 +78,9 @@ const Header: React.FC = () => {
       <Link href="/" data-active={isActive('/')}>
         4o4.space
       </Link>
+      <Link href="/editor" data-active={isActive('/editor')}>
+        Add entity
+      </Link>
     </nav>
   );
 };
