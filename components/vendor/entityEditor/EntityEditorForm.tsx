@@ -3,14 +3,14 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { entityFormSchema } from 'forms/entityForm';
-import { z } from "zod"
+import { TypeOf, z } from "zod"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/ui/form';
-import { Input } from '@/ui/input';
-import { Button } from '@/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select';
 import { useEffect, useState } from 'react';
 import { Country, State, City } from 'country-state-city';
 import { createShop } from 'services/api/shop';
+import { isFieldRequired } from 'utils/zod/zodUtils';
+import InputField from '@/form/InputField';
 
 async function onSubmit(values: z.infer<typeof entityFormSchema>) {
     const { country, state, ...otherValues } = values;
@@ -21,6 +21,9 @@ async function onSubmit(values: z.infer<typeof entityFormSchema>) {
         console.error('Error creating shop:', error);
     }
 }
+
+type EntityFormSchema = TypeOf<typeof entityFormSchema>;
+type FormFieldName = keyof EntityFormSchema;
 
 export function EntityEditorForm() {
     const [countries, setCountries] = useState([]);
@@ -47,145 +50,42 @@ export function EntityEditorForm() {
         }
     }, [form.watch("state")]);
 
+    const formFields: { name: FormFieldName, placeholder: string, description: string }[] = [
+        { name: 'name', placeholder: 'Name', description: 'This is your entity name.' },
+        { name: 'username', placeholder: 'Username', description: 'This is your public display name.' },
+        { name: 'email', placeholder: 'Email', description: '' },
+        { name: 'phoneNumber', placeholder: 'Phone Number', description: '' },
+        { name: 'websiteLink', placeholder: 'Website Link', description: '' },
+        { name: 'bio', placeholder: 'Bio', description: '' },
+        { name: 'description', placeholder: 'Description', description: '' },
+        { name: 'physicalAddress', placeholder: 'Physical Address', description: '' },
+        { name: 'profilePicture', placeholder: 'Profile Picture URL', description: '' },
+        { name: 'headerImage', placeholder: 'Header Image URL', description: '' },
+    ];
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-full">
-                <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Name</FormLabel>
-                            <FormControl>
-                                <Input placeholder="name" {...field} />
-                            </FormControl>
-                            <FormDescription>
-                                This is your entity name.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="username"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Username</FormLabel>
-                            <FormControl>
-                                <Input placeholder="username" {...field} />
-                            </FormControl>
-                            <FormDescription>
-                                This is your public display name.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Email" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="phoneNumber"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Phone Number</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Phone Number" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="websiteLink"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Website Link</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Website Link" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="bio"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Bio</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Bio" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Description</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Description" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="physicalAddress"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Physical Address</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Physical Address" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="profilePicture"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Profile Picture</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Profile Picture URL" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="headerImage"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Header Image</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Header Image URL" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                {formFields.map(({ name, placeholder, description }) => (
+                    <FormField
+                        key={name}
+                        control={form.control}
+                        name={name}
+                        render={({ field }) => (
+                            <InputField
+                                field={field}
+                                label={name
+                                    .split(/(?=[A-Z])/)
+                                    .join(' ')
+                                    .replace(/^\w/, (c) => c.toUpperCase())
+                                }
+                                placeholder={placeholder}
+                                description={description}
+                                isRequired={isFieldRequired(entityFormSchema, name as FormFieldName)}
+                            />
+                        )}
+                    />
+                ))}
                 <div className='flex items-center gap-3 flex-grow'>
                     <FormField
                         control={form.control}

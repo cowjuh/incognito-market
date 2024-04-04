@@ -6,14 +6,17 @@ import { ReactNode } from "react";
 
 const EditorPage: NextPageWithLayout = () => {
     return (
-        <EntityEditorForm />
+        <div className="max-w-[700px] w-full flex flex-col gap-4">
+            <h1 className="text-xl">Create Shop</h1>
+            <EntityEditorForm />
+        </div>
     )
 }
 
 EditorPage.getLayout = function getLayout(page: ReactNode) {
     return (
         <MainLayout>
-            <PaddedLayout>
+            <PaddedLayout className="items-center">
                 {page}
             </PaddedLayout>
         </MainLayout>
