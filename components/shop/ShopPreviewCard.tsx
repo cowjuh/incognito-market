@@ -17,7 +17,7 @@ const ShopPreviewCard: React.FC<ShopPreviewCardProps> = ({ shop }) => {
         <div
             onClick={() => router.push(`/shop/${shop.id}`)}
             key={shop.id}
-            className="rounded-lg border flex flex-col gap-4 py-4 cursor-pointer w-[300px] overflow-hidden justify-between"
+            className="rounded-lg border flex flex-col gap-4 py-4 cursor-pointer w-[300px] overflow-hidden justify-between hover:border-neutral-400 transition-all"
         >
             <div className='flex flex-col gap-4'>
                 <div className='flex items-center gap-2 px-4'>
