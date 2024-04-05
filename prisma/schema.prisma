@@ -86,6 +86,17 @@ model FeaturedItem {
   shop        Shop     @relation(fields: [shopId], references: [id])
 }
 
+model Update {
+  id          String    @id @default(cuid())
+  title       String
+  content     String
+  postedAt    DateTime  @default(now())
+
+  shopId      String?
+  shop        Shop?     @relation(fields: [shopId], references: [id])
+  @@index([shopId])
+}
+
 model Shop {
   id              String    @id @default(cuid())
   name            String
@@ -105,4 +116,5 @@ model Shop {
   owner           User          @relation(fields: [ownerId], references: [id])
   socialMedia     SocialMedia[]
   featuredItems   FeaturedItem[]
+  updates         Update[]
 }
