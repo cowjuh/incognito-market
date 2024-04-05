@@ -91,6 +91,8 @@ model Update {
   title       String
   content     String
   postedAt    DateTime  @default(now())
+  callToActionText String?
+  callToActionLink String?
 
   shopId      String?
   shop        Shop?     @relation(fields: [shopId], references: [id])
