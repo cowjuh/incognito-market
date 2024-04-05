@@ -13,6 +13,7 @@ import { SiFacebook, SiTiktok } from '@icons-pack/react-simple-icons';
 import Image from "next/image";
 import { parseJson } from "utils/prisma/prismaUtils";
 import { formatPostedAt } from "utils/stringUtils";
+import { Button } from "@/ui/button";
 
 const socialMediaIcons = {
     [SocialMediaName.INSTAGRAM]: InstagramLogoIcon,
@@ -70,14 +71,19 @@ const ShopPage: NextPageWithLayout = () => {
                                 <p>{shop.owner.name && <p>{shop.owner.name}</p>}</p>
                             </div>
                             {shop && shop.updates && shop.updates.length > 0 &&
-                                <div className="w-full flex flex-col gap-2">
+                                <div className="w-full flex flex-col gap-4">
                                     <h3 className="font-medium text-neutral-400">UPDATES</h3>
                                     {shop.updates.map((update) => {
                                         return (
                                             <div className="flex flex-col gap-2 border p-4 rounded-md">
                                                 <p className="font-medium">{update.title}</p>
                                                 <p>{update.content}</p>
-                                                <p className="text-neutral-400">{formatPostedAt(String(update.postedAt))}</p>
+                                                <div className="flex w-full items-center justify-between">
+                                                    <p className="text-neutral-400 text-sm">{formatPostedAt(String(update.postedAt))}</p>
+                                                    {update.callToActionLink && update.callToActionText &&
+                                                        <Button variant="outline" className="bg-inherit hover:bg-neutral-50">{update.callToActionText}</Button>
+                                                    }
+                                                </div>
                                             </div>
                                         )
                                     })}

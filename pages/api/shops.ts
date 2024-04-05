@@ -9,8 +9,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     owner: true,
                     socialMedia: true,
                     featuredItems: true,
-                    updates: true,
-                }
+                    updates: true
+                },
             });
             res.status(200).json({ message: 'Shops retrieved successfully', shops });
         } catch (error) {

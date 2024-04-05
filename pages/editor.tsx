@@ -6,8 +6,11 @@ import { ReactNode } from "react";
 
 const EditorPage: NextPageWithLayout = () => {
     return (
-        <div className="max-w-[700px] w-full flex flex-col gap-4">
-            <h1 className="text-xl">Create Shop</h1>
+        <div className="max-w-[700px] w-full flex flex-col gap-8">
+            <div>
+                <h1 className="text-xl">Shop Editor</h1>
+                <p className="text-neutral-400">Set up and edit your shop</p>
+            </div>
             <EntityEditorForm />
         </div>
     )
