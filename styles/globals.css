@@ -91,3 +91,7 @@ h3 {
   -ms-overflow-style: none; /* for Internet Explorer and Edge */
   scrollbar-width: none; /* for Firefox */
 }
+
+.ReactCrop__crop-selection:focus {
+  outline: none !important;
+}

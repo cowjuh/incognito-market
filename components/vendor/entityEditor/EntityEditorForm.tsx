@@ -16,6 +16,7 @@ import { uploadFile } from 'services/uploadService';
 import Image from 'next/image';
 import { useDropzone } from 'react-dropzone';
 import { ImageIcon } from '@radix-ui/react-icons';
+import ImageCropDialog from '@/dialog/ImageCropDialog';
 
 async function onSubmit(values: z.infer<typeof entityFormSchema>) {
     const { country, state, ...otherValues } = values;
@@ -87,6 +88,12 @@ export function EntityEditorForm() {
         }
     });
 
+    const handleSaveImage = async (blob: Blob) => {
+        const file = new File([blob], 'profilePicture.png', { type: 'image/png' });
+        setProfilePictureFile(file);
+    }
+
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-full">
@@ -109,6 +116,10 @@ export function EntityEditorForm() {
                         </div>
                     </div>
                     <div className='flex flex-col gap-10 flex-grow'>
+                        {profilePictureFile &&
+                            <ImageCropDialog src={URL.createObjectURL(profilePictureFile)} onSave={handleSaveImage} />
+                        }
+
                         {formFields.map(({ name, label, placeholder, description }) => (
                             <FormField
                                 key={name}
