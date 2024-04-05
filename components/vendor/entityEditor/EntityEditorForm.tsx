@@ -8,7 +8,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select';
 import { useEffect, useState } from 'react';
 import { Country, State, City } from 'country-state-city';
-import { isFieldRequired } from 'utils/zod/zodUtils';
+import { isFieldRequired, isFieldTextArea } from 'utils/zod/zodUtils';
 import InputField from '@/form/InputField';
 import { Button } from '@/ui/button';
 import { uploadFile } from 'services/uploadService';
@@ -17,6 +17,7 @@ import { useDropzone } from 'react-dropzone';
 import { ImageIcon } from '@radix-ui/react-icons';
 import ImageCropDialog from '@/dialog/ImageCropDialog';
 import { onSubmit } from 'utils/shopUtils';
+import TextAreaField from '@/form/TextAreaField';
 
 type EntityFormSchema = TypeOf<typeof entityFormSchema>;
 type FormFieldName = keyof EntityFormSchema;
@@ -66,6 +67,7 @@ export function EntityEditorForm() {
             ]
         },
     ];
+
     const [profilePictureFile, setProfilePictureFile] = useState<File | null>(null);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,15 +131,33 @@ export function EntityEditorForm() {
                                                 key={name}
                                                 control={form.control}
                                                 name={name}
-                                                render={({ field }) => (
-                                                    <InputField
-                                                        field={field}
-                                                        label={label}
-                                                        placeholder={placeholder}
-                                                        description={description}
-                                                        isRequired={isFieldRequired(entityFormSchema, name as FormFieldName)}
-                                                    />
-                                                )}
+                                                render={({ field }) => {
+                                                    const isTextArea = isFieldTextArea(entityFormSchema, name as FormFieldName);
+                                                    const isRequired = isFieldRequired(entityFormSchema, name as FormFieldName);
+                                                    console.log('isTextArea', isTextArea);
+                                                    return (
+                                                        <>
+                                                            {isTextArea &&
+                                                                <TextAreaField
+                                                                    field={field}
+                                                                    label={label}
+                                                                    placeholder={placeholder}
+                                                                    description={description}
+                                                                    isRequired={isRequired}
+                                                                />
+                                                            }
+                                                            {!isTextArea &&
+                                                                <InputField
+                                                                    field={field}
+                                                                    label={label}
+                                                                    placeholder={placeholder}
+                                                                    description={description}
+                                                                    isRequired={isRequired}
+                                                                />
+                                                            }
+                                                        </>
+                                                    )
+                                                }}
                                             />
                                         ))}
                                     </div>
