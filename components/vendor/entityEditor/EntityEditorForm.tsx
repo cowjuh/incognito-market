@@ -8,7 +8,6 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select';
 import { useEffect, useState } from 'react';
 import { Country, State, City } from 'country-state-city';
-import { createShop } from 'services/api/shop';
 import { isFieldRequired } from 'utils/zod/zodUtils';
 import InputField from '@/form/InputField';
 import { Button } from '@/ui/button';
@@ -17,16 +16,7 @@ import Image from 'next/image';
 import { useDropzone } from 'react-dropzone';
 import { ImageIcon } from '@radix-ui/react-icons';
 import ImageCropDialog from '@/dialog/ImageCropDialog';
-
-async function onSubmit(values: z.infer<typeof entityFormSchema>) {
-    const { country, state, ...otherValues } = values;
-    try {
-        const response = await createShop(otherValues);
-        console.log('Shop created successfully:', response);
-    } catch (error) {
-        console.error('Error creating shop:', error);
-    }
-}
+import { onSubmit } from 'utils/shopUtils';
 
 type EntityFormSchema = TypeOf<typeof entityFormSchema>;
 type FormFieldName = keyof EntityFormSchema;
@@ -96,7 +86,7 @@ export function EntityEditorForm() {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-full">
+            <form onSubmit={form.handleSubmit((values) => onSubmit(values, profilePictureFile))} className="space-y-8 max-w-full">
                 <div className='flex items-start gap-16'>
                     <div className='flex flex-col gap-4'>
                         <div className='h-36 w-36 bg-gray-200 rounded-full relative'>
