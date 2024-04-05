@@ -8,7 +8,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 include: {
                     owner: true,
                     socialMedia: true,
-                    featuredItems: true
+                    featuredItems: true,
+                    updates: true,
                 }
             });
             res.status(200).json({ message: 'Shops retrieved successfully', shops });

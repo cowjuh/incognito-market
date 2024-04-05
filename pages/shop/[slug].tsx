@@ -7,11 +7,12 @@ import { NextPageWithLayout } from "../../layout/NextPageWithLayout";
 import Link from "next/link";
 import Avatar from "@/Avatar";
 import { Skeleton } from "@/ui/skeleton";
-import { Prisma, SocialMediaName } from "@prisma/client";
+import { SocialMediaName } from "@prisma/client";
 import { ChevronLeftIcon, InstagramLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons";
 import { SiFacebook, SiTiktok } from '@icons-pack/react-simple-icons';
 import Image from "next/image";
 import { parseJson } from "utils/prisma/prismaUtils";
+import { formatPostedAt } from "utils/stringUtils";
 
 const socialMediaIcons = {
     [SocialMediaName.INSTAGRAM]: InstagramLogoIcon,
@@ -67,8 +68,21 @@ const ShopPage: NextPageWithLayout = () => {
                             <div>
                                 <h3 className="font-medium text-neutral-400">FOUNDED BY</h3>
                                 <p>{shop.owner.name && <p>{shop.owner.name}</p>}</p>
-
                             </div>
+                            {shop && shop.updates && shop.updates.length > 0 &&
+                                <div className="w-full flex flex-col gap-2">
+                                    <h3 className="font-medium text-neutral-400">UPDATES</h3>
+                                    {shop.updates.map((update) => {
+                                        return (
+                                            <div className="flex flex-col gap-2 border p-4 rounded-md">
+                                                <p className="font-medium">{update.title}</p>
+                                                <p>{update.content}</p>
+                                                <p className="text-neutral-400">{formatPostedAt(String(update.postedAt))}</p>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            }
                         </div>
                     }
                 </div>

@@ -4,7 +4,7 @@ import { Prisma, PrismaClient, Shop } from '@prisma/client'
 const prisma = new PrismaClient()
 
 const shopWithRelations = Prisma.validator<Prisma.ShopDefaultArgs>()({
-    include: { owner: true, socialMedia: true, featuredItems: true },
+    include: { owner: true, socialMedia: true, featuredItems: true, updates: true },
 });
 
 export type ShopWithRelations = Prisma.ShopGetPayload<typeof shopWithRelations>;
@@ -62,6 +62,7 @@ export default async function handler(
                     owner: true,
                     socialMedia: true,
                     featuredItems: true,
+                    updates: true,
                 },
             });
             if (!shop) {
