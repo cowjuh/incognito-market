@@ -46,17 +46,26 @@ export function EntityEditorForm() {
         }
     }, [form.watch("state")]);
 
-    const formFields: { name: FormFieldName, label: string, placeholder: string, description: string }[] = [
-        { name: 'name', label: 'Entity Name', placeholder: 'Name', description: 'This is your entity name.' },
-        { name: 'username', label: 'Username', placeholder: 'Username', description: 'This is your public display name.' },
-        { name: 'email', label: 'Email', placeholder: 'Email', description: '' },
-        { name: 'phoneNumber', label: 'Phone Number', placeholder: 'Phone Number', description: '' },
-        { name: 'websiteLink', label: 'Website Link', placeholder: 'Website Link', description: '' },
-        { name: 'bio', label: 'Bio', placeholder: 'Bio', description: '' },
-        { name: 'description', label: 'Description', placeholder: 'Description', description: '' },
-        { name: 'physicalAddress', label: 'Physical Address', placeholder: 'Physical Address', description: '' },
+    const formSections: { title: string, fields: { name: FormFieldName, label: string, placeholder: string, description: string }[] }[] = [
+        {
+            title: 'Basic Information',
+            fields: [
+                { name: 'name', label: 'Entity Name', placeholder: 'Name', description: 'This is your entity name.' },
+                { name: 'username', label: 'Username', placeholder: 'Username', description: 'This is your public display name.' },
+                { name: 'email', label: 'Email', placeholder: 'Email', description: '' },
+                { name: 'phoneNumber', label: 'Phone Number', placeholder: 'Phone Number', description: '' },
+            ]
+        },
+        {
+            title: 'Additional Information',
+            fields: [
+                { name: 'websiteLink', label: 'Website Link', placeholder: 'Website Link', description: '' },
+                { name: 'bio', label: 'Bio', placeholder: 'Bio', description: '' },
+                { name: 'description', label: 'Description', placeholder: 'Description', description: '' },
+                { name: 'physicalAddress', label: 'Physical Address', placeholder: 'Physical Address', description: '' },
+            ]
+        },
     ];
-
     const [profilePictureFile, setProfilePictureFile] = useState<File | null>(null);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,7 +98,7 @@ export function EntityEditorForm() {
             <form onSubmit={form.handleSubmit((values) => onSubmit(values, profilePictureFile))} className="space-y-8 max-w-full">
                 <div className='flex items-start gap-16'>
                     <div className='flex flex-col gap-4'>
-                        <div className='h-36 w-36 bg-gray-200 rounded-full relative'>
+                        <div className='h-36 w-36 bg-neutral-200 rounded-full relative'>
                             {profilePictureFile &&
                                 <Image
                                     src={URL.createObjectURL(profilePictureFile)}
@@ -110,50 +119,31 @@ export function EntityEditorForm() {
                             <ImageCropDialog src={URL.createObjectURL(profilePictureFile)} onSave={handleSaveImage} />
                         }
 
-                        {formFields.map(({ name, label, placeholder, description }) => (
-                            <FormField
-                                key={name}
-                                control={form.control}
-                                name={name}
-                                render={({ field }) => (
-                                    <InputField
-                                        field={field}
-                                        label={label}
-                                        placeholder={placeholder}
-                                        description={description}
-                                        isRequired={isFieldRequired(entityFormSchema, name as FormFieldName)}
-                                    />
-                                )}
-                            />
-                        ))}
-                        <FormField
-                            key="profilePicture"
-                            control={form.control}
-                            name="profilePicture"
-                            render={({ field }) => (
-                                <InputField
-                                    field={field}
-                                    label="Profile Picture URL"
-                                    placeholder="Profile Picture URL"
-                                    description=""
-                                    isRequired={isFieldRequired(entityFormSchema, "profilePicture" as FormFieldName)}
-                                />
-                            )}
-                        />
-                        <FormField
-                            key="headerImage"
-                            control={form.control}
-                            name="headerImage"
-                            render={({ field }) => (
-                                <InputField
-                                    field={field}
-                                    label="Header Image URL"
-                                    placeholder="Header Image URL"
-                                    description=""
-                                    isRequired={isFieldRequired(entityFormSchema, "headerImage" as FormFieldName)}
-                                />
-                            )}
-                        />
+                        <div className='flex flex-col gap-10 flex-grow'>
+                            {formSections.map(({ title, fields }) => (
+                                <div key={title} className='flex flex-col gap-6'>
+                                    <h1 className='text-xl font-medium'>{title}</h1>
+                                    <div className='flex flex-col gap-4'>
+                                        {fields.map(({ name, label, placeholder, description }) => (
+                                            <FormField
+                                                key={name}
+                                                control={form.control}
+                                                name={name}
+                                                render={({ field }) => (
+                                                    <InputField
+                                                        field={field}
+                                                        label={label}
+                                                        placeholder={placeholder}
+                                                        description={description}
+                                                        isRequired={isFieldRequired(entityFormSchema, name as FormFieldName)}
+                                                    />
+                                                )}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                         <div className='flex items-center gap-3 flex-grow'>
                             <FormField
                                 control={form.control}
@@ -232,7 +222,7 @@ export function EntityEditorForm() {
                             />
 
                         </div>
-                        <div {...getRootProps()} className="flex items-center justify-center h-40 border-2 border-dashed border-gray-300 rounded-md w-full">
+                        <div {...getRootProps()} className="flex items-center justify-center h-40 border-2 border-dashed border-neutral-300 rounded-md w-full">
                             <input {...getInputProps()} />
                             {
                                 isDragActive ?

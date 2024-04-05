@@ -12,6 +12,4 @@ export const entityFormSchema = z.object({
     country: z.string().optional(),
     state: z.string().optional(),
     city: z.string().optional(),
-    profilePicture: z.string().url("Invalid URL format.").optional(),
-    headerImage: z.string().url("Invalid URL format.").optional(),
 });

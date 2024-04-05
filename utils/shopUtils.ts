@@ -5,7 +5,7 @@ import { uploadFile } from 'services/uploadService';
 import { createShop } from 'services/api/shop';
 
 export async function onSubmit(values: TypeOf<typeof entityFormSchema>, profilePictureFile: File | null) {
-    const { country, state, profilePicture, ...otherValues } = values;
+    const { country, state, ...otherValues } = values;
     let profilePicturePublicURL = '';
 
     const shopObject: Partial<ShopWithRelations> = {
