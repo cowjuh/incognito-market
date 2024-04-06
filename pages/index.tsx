@@ -7,7 +7,6 @@ import ShopPreviewCard from "@/shop/ShopPreviewCard";
 import { formatPlural } from "utils/stringUtils";
 import FilterPanel from "@/FilterPanel";
 import FullWidthLayout from "layout/FullWidthLayout";
-import { Skeleton } from "@/ui/skeleton";
 
 type Props = {
   feed: PostProps[]
