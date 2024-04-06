@@ -12,8 +12,8 @@ type ImageDimensions = {
     height: number;
 };
 
-export const getCarouselFlexBasisPx = (imageDimensions: ImageDimensions, carouselHeight: number, imageIndex: number) => {
-    const aspectRatio = imageDimensions[imageIndex]?.width / imageDimensions[imageIndex]?.height;
+export const getCarouselFlexBasisPx = (imageDimensions: ImageDimensions, carouselHeight: number) => {
+    const aspectRatio = imageDimensions.width / imageDimensions.height;
     const imageWidth = aspectRatio * carouselHeight;
     return imageWidth;
 };

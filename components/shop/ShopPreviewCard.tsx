@@ -39,7 +39,7 @@ const ShopPreviewCard: React.FC<ShopPreviewCardProps> = ({ shop }) => {
                         <span className='text-neutral-400'>@{shop.username}</span>
                     </div>
                 </div>
-                {shop.featuredItems.map((item, itemIndex) => (
+                {imageDimensions && shop.featuredItems.map((item, itemIndex) => (
                     <Carousel key={itemIndex} className="w-full h-48"
                         opts={{
                             align: 'center',
@@ -48,7 +48,8 @@ const ShopPreviewCard: React.FC<ShopPreviewCardProps> = ({ shop }) => {
                             ref={carouselRef}
                             className="flex -ml-1 h-48">
                             {parseJson<Array<any>>(item.images).map((image, imageIndex) => {
-                                const flexBasis = getCarouselFlexBasisPx(imageDimensions[imageIndex], carouselHeight, imageIndex);
+                                if (!imageDimensions[imageIndex]) return null;
+                                const flexBasis = getCarouselFlexBasisPx(imageDimensions[imageIndex], carouselHeight);
                                 return (
                                     <CarouselItem key={`${itemIndex}-${imageIndex}`} style={{ flex: `0 0 ${flexBasis}px` }} className='pl-1'>
                                         <NextImage
