@@ -28,10 +28,10 @@ export const updateShop = async (id: string, data: Partial<ShopWithRelations>) =
 export const createShop = async (data: Partial<ShopWithRelations>) => {
     try {
         console.log('createShop data', data)
-        const response = await axios.post(`/api/shop`, {
-            ...data,
-            ownerId: "clug8ndl60000jwekxrs40nfy"
-        });
+        if (!data.ownerId) {
+            throw new Error('Owner ID is required to create a shop');
+        }
+        const response = await axios.post(`/api/shop`, data);
         console.log('createShop response', response)
         return response.data;
     } catch (error) {

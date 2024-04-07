@@ -4,7 +4,7 @@ import { ShopWithRelations } from 'pages/api/shop';
 import { uploadFile } from 'services/uploadService';
 import { createShop } from 'services/api/shop';
 
-export async function onSubmit(values: TypeOf<typeof entityFormSchema>, profilePictureFile: File | null) {
+export async function onSubmit(values: TypeOf<typeof entityFormSchema>, profilePictureFile: File | null, userId: string) {
     const { country, state, ...otherValues } = values;
     let profilePicturePublicURL = '';
 
@@ -18,7 +18,7 @@ export async function onSubmit(values: TypeOf<typeof entityFormSchema>, profileP
     }
 
     try {
-        const response = await createShop({ ...otherValues, profilePicture: profilePicturePublicURL });
+        const response = await createShop({ ...otherValues, profilePicture: profilePicturePublicURL, ownerId: userId });
         console.log('Shop created successfully:', response);
     } catch (error) {
         console.error('Error creating shop:', error);

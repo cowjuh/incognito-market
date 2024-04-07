@@ -18,6 +18,7 @@ import { ImageIcon } from '@radix-ui/react-icons';
 import ImageCropDialog from '@/dialog/ImageCropDialog';
 import { onSubmit } from 'utils/shopUtils';
 import TextAreaField from '@/form/TextAreaField';
+import { useSession } from 'next-auth/react';
 
 type EntityFormSchema = TypeOf<typeof entityFormSchema>;
 type FormFieldName = keyof EntityFormSchema;
@@ -26,6 +27,7 @@ export function EntityEditorForm() {
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
+    const { data: session } = useSession();
 
     const form = useForm<z.infer<typeof entityFormSchema>>({
         resolver: zodResolver(entityFormSchema)
@@ -97,7 +99,14 @@ export function EntityEditorForm() {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit((values) => onSubmit(values, profilePictureFile))} className="space-y-8 max-w-full">
+            <form onSubmit={form.handleSubmit((values) => {
+                if (session?.user) {
+                    onSubmit(values, profilePictureFile, session.user.id);
+                } else {
+                    console.error('User not logged in');
+                }
+            }
+            )} className="space-y-8 max-w-full">
                 <div className='flex items-start gap-16'>
                     <div className='flex flex-col gap-4'>
                         <div className='h-36 w-36 bg-neutral-200 rounded-full relative'>
