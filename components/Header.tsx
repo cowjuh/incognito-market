@@ -24,7 +24,11 @@ const Header: React.FC = () => {
   }
 
   const handleMyShops = () => {
-    router.push('/shops');
+    if (session && session.user && session.user.id) {
+      router.push(`/user/${session.user.id}/shops`);
+    } else {
+      console.error("No session found or user ID is missing");
+    }
   }
 
   return (
