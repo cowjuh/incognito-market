@@ -2,6 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
+import { Avatar, AvatarImage } from './ui/avatar';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuLabel } from './ui/dropdown-menu';
+import { ExitIcon, PlusIcon } from '@radix-ui/react-icons';
+import { BuildingStorefrontIcon } from '@heroicons/react/24/outline'
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -10,67 +14,17 @@ const Header: React.FC = () => {
 
   const { data: session, status } = useSession();
 
-  let left = (
-    <div className="left">
-      <Link href="/" data-active={isActive('/')}>
-        4o4.space
-      </Link>
-    </div>
-  );
-
-  let right = null;
-
-  if (status === 'loading') {
-    left = (
-      <div className="left" >
-        <Link href="/" className="bold" data-active={isActive('/')}>
-          Feed
-        </Link>
-      </div>
-    );
-    right = (
-      <div className="right">
-        <p>Validating session ...</p>
-      </div>
-    );
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/');
   }
 
-  if (!session) {
-    right = (
-      <div className="right">
-        <Link href="/api/auth/signin" data-active={isActive('/signup')}>
-          Log in
-        </Link>
-      </div>
-    );
+  const handleAddEntity = () => {
+    router.push('/editor');
   }
 
-  if (session) {
-    left = (
-      <div className="left">
-        <Link href="/" className="bold" data-active={isActive('/')}>
-          Feed
-        </Link>
-        <Link href="/drafts" data-active={isActive('/drafts')}>
-          My drafts
-        </Link>
-      </div>
-    );
-    right = (
-      <div className="right">
-        <p>
-          {session.user.name} ({session.user.email})
-        </p>
-        <Link href="/create">
-          <button>
-            New post
-          </button>
-        </Link>
-        <button onClick={() => signOut()}>
-          <a>Log out</a>
-        </button>
-      </div>
-    );
+  const handleMyShops = () => {
+    router.push('/shops');
   }
 
   return (
@@ -78,9 +32,39 @@ const Header: React.FC = () => {
       <Link href="/" data-active={isActive('/')}>
         4o4.space
       </Link>
-      <Link href="/editor" data-active={isActive('/editor')}>
-        Add entity
-      </Link>
+      <div className='flex items-center gap-2'>
+        {session &&
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Avatar className='flex items-center h-7 w-7'>
+                <AvatarImage src={session.user.image} alt="Avatar" />
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className='w-56 text-sm'>
+              <DropdownMenuLabel>{session.user.name} ({session.user.email})</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={handleMyShops} className='flex items-center gap-2'>
+                <BuildingStorefrontIcon className='w-4 h-4' />
+                <span>My shops</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={handleAddEntity} className='flex items-center gap-2'>
+                <PlusIcon className='w-4 h-4' />
+                <span>Create shop</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={handleSignOut} className='flex items-center gap-2'>
+                <ExitIcon className='w-4 h-4' />
+                <span>Sign out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        }
+        {!session &&
+          <Link href="/api/auth/signin" data-active={isActive('/signin')}>
+            Log in
+          </Link>
+        }
+      </div>
     </nav>
   );
 };
