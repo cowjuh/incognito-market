@@ -92,7 +92,7 @@ const ShopPreviewCard: React.FC<ShopPreviewCardProps> = ({ shop, isVendorView })
                 <AnimatePresence>
                     {!(isVendorView && isHoveringFooter) &&
                         <motion.div
-                            key="bio"
+                            key={`bio-${shop.id}`}
                             initial={{ y: 50, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: -50, opacity: 0 }}
@@ -115,7 +115,7 @@ const ShopPreviewCard: React.FC<ShopPreviewCardProps> = ({ shop, isVendorView })
                 <AnimatePresence>
                     {isVendorView && isHoveringFooter &&
                         <motion.div
-                            key="actions"
+                            key={`actions-${shop.id}`}
                             initial={{ y: 50, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: 50, opacity: 0 }}
