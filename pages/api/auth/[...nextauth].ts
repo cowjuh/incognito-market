@@ -1,6 +1,7 @@
 import { NextApiHandler } from 'next';
 import NextAuth from 'next-auth';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
+
 import GoogleProvider from 'next-auth/providers/google'
 import prisma from '../../../lib/prisma';
 
@@ -25,6 +26,22 @@ const options = {
     adapter: PrismaAdapter(prisma),
     secret: process.env.NEXTAUTH_SECRET,
     debug: true, // Enable debug mode
+    callbacks: {
+        async jwt({ token, user, account, profile, isNewUser }) {
+            user && (token.user = user)
+            return token
+        },
+        async session({ session, token, user }) {
+            session = {
+                ...session,
+                user: {
+                    id: user.id,
+                    ...session.user
+                }
+            }
+            return session
+        }
+    },
     logger: {
         // Use a custom logger
         error(code, ...message) {
