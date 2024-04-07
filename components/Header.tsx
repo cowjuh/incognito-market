@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
@@ -6,6 +6,7 @@ import { Avatar, AvatarImage } from './ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuLabel } from './ui/dropdown-menu';
 import { ExitIcon, PlusIcon } from '@radix-ui/react-icons';
 import { BuildingStorefrontIcon } from '@heroicons/react/24/outline'
+import { Separator } from './ui/separator';
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -13,6 +14,11 @@ const Header: React.FC = () => {
     router.pathname === pathname;
 
   const { data: session, status } = useSession();
+  const [isVendorRoute, setIsVendorRoute] = React.useState(router.pathname.startsWith('/vendor'));
+
+  useEffect(() => {
+    setIsVendorRoute(router.pathname.startsWith('/vendor'));
+  }, [router.pathname]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -20,12 +26,12 @@ const Header: React.FC = () => {
   }
 
   const handleAddEntity = () => {
-    router.push('/editor');
+    router.push('/vendor/editor');
   }
 
   const handleMyShops = () => {
     if (session && session.user && session.user.id) {
-      router.push(`/user/${session.user.id}/shops`);
+      router.push(`/vendor/shops`);
     } else {
       console.error("No session found or user ID is missing");
     }
@@ -33,8 +39,10 @@ const Header: React.FC = () => {
 
   return (
     <nav className='flex items-center w-full justify-between px-4 py-2 border-b sticky top-0 h-10 z-20 bg-neutral-100'>
-      <Link href="/" data-active={isActive('/')}>
-        4o4.space
+      <Link href="/" data-active={isActive('/')} className='flex items-center gap-2'>
+        <span>4o4.space</span>
+        <Separator className='h-5' orientation='vertical' />
+        <span className='font-semibold text-sm'>{isVendorRoute && 'Vendor'}</span>
       </Link>
       <div className='flex items-center gap-2'>
         {session &&
@@ -49,7 +57,7 @@ const Header: React.FC = () => {
               <DropdownMenuSeparator />
               <DropdownMenuItem onSelect={handleMyShops} className='flex items-center gap-2'>
                 <BuildingStorefrontIcon className='w-4 h-4' />
-                <span>My shops</span>
+                <span>Dashboard</span>
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={handleAddEntity} className='flex items-center gap-2'>
                 <PlusIcon className='w-4 h-4' />

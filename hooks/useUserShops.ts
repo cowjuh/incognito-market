@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { getShopsByOwner } from '../services/api/shops';
 import { ShopWithRelations } from 'pages/api/shop';
 
-export const useUserShops = (ownerId: string) => {
+export const useUserShops = (ownerId: string | undefined) => {
     const [shops, setShops] = useState<ShopWithRelations[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        if (!ownerId) return;
         const fetchShops = async () => {
             setLoading(true);
             try {
