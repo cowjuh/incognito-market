@@ -17,7 +17,7 @@ const UserShops: NextPageWithLayout = () => {
                 <div className="flex flex-wrap gap-4">
                     {shopsLoading && <div>Loading...</div>}
                     {session?.user?.id && !shopsLoading && shops.map((shop) => (
-                        <ShopPreviewCard key={shop.id} shop={shop} />
+                        <ShopPreviewCard key={shop.id} shop={shop} isVendorView={true} />
                     ))}
                 </div>
             </div>

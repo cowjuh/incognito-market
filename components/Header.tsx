@@ -7,6 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { ExitIcon, PlusIcon } from '@radix-ui/react-icons';
 import { BuildingStorefrontIcon } from '@heroicons/react/24/outline'
 import { Separator } from './ui/separator';
+import { useIsVendorRoute } from 'hooks/useIsVendorRoute';
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -14,11 +15,7 @@ const Header: React.FC = () => {
     router.pathname === pathname;
 
   const { data: session, status } = useSession();
-  const [isVendorRoute, setIsVendorRoute] = React.useState(router.pathname.startsWith('/vendor'));
-
-  useEffect(() => {
-    setIsVendorRoute(router.pathname.startsWith('/vendor'));
-  }, [router.pathname]);
+  const isVendorRoute = useIsVendorRoute();
 
   const handleSignOut = async () => {
     await signOut();
