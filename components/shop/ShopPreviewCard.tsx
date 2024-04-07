@@ -3,7 +3,7 @@ import Avatar from '@/Avatar';
 import { ShopWithRelations } from 'pages/api/shop';
 import NextImage from 'next/image';
 import { parseJson } from 'utils/prisma/prismaUtils';
-import { ExternalLinkIcon, Pencil1Icon, SewingPinIcon } from '@radix-ui/react-icons';
+import { ExternalLinkIcon, GearIcon, Pencil1Icon, SewingPinIcon } from '@radix-ui/react-icons';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/ui/carousel";
 import { useEffect, useRef, useState } from 'react';
 import useImageDimensions from 'hooks/useImageDimensions';
@@ -131,8 +131,8 @@ const ShopPreviewCard: React.FC<ShopPreviewCardProps> = ({ shop, isVendorView })
                             <motion.div
                                 onClick={handleEdit}
                                 className='bg-neutral-200 bg-opacity-50 hover:bg-opacity-100 p-2 px-3 rounded-full flex gap-1 items-center text-sm transition-all cursor-pointer'>
-                                <Pencil1Icon className='w-4 h-4' />
-                                <span>Edit</span>
+                                <GearIcon className='w-4 h-4' />
+                                <span>Manage</span>
                             </motion.div>
                         </motion.div>
                     }
