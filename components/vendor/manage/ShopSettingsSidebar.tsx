@@ -47,8 +47,8 @@ export default function ShopSettingsSidebar({ activeShop }: ShopSettingsSidebarP
             </Select>
             <NavLink href={`/vendor/shop/dashboard/${activeShop.id}`}>Dashboard</NavLink>
             <NavLink href={`/vendor/shop/updates/${activeShop.id}`} >Updates</NavLink>
+            <NavLink href={`/vendor/shop/members/${activeShop.id}`}>Members</NavLink>
             <NavLink href={`/vendor/shop/events/${activeShop.id}`} isDisabled>Events</NavLink>
-            <NavLink href="/vendor/shop/team" isDisabled>Team</NavLink>
         </nav>
     );
 }

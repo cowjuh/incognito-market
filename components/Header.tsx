@@ -38,8 +38,12 @@ const Header: React.FC = () => {
     <nav className='flex items-center w-full justify-between px-4 py-2 border-b sticky top-0 h-10 z-20 bg-neutral-100'>
       <Link href="/" data-active={isActive('/')} className='flex items-center gap-2'>
         <span>4o4.space</span>
-        <Separator className='h-5' orientation='vertical' />
-        <span className='font-semibold text-sm'>{isVendorRoute && 'Vendor'}</span>
+        {isVendorRoute &&
+          <>
+            <Separator className='h-5' orientation='vertical' />
+            <span className='font-semibold text-sm'>Vendor</span>
+          </>
+        }
       </Link>
       <div className='flex items-center gap-2'>
         {session &&
