@@ -33,13 +33,17 @@ const ShopPreviewCard: React.FC<ShopPreviewCardProps> = ({ shop, isVendorView })
         router.push(`/shop/${shop.id}`);
     }
 
-    const handleEdit = () => {
-        router.push(`/vendor/edit/${shop.id}`);
+    const handleManage = () => {
+        router.push(`/vendor/shop/dashboard/${shop.id}`);
     }
 
     return (
         <div
-            onClick={handleVisit}
+            onClick={
+                () => {
+                    if (!isVendorView) handleVisit();
+                }
+            }
             key={shop.id}
             onMouseEnter={() => setIsHoveringFooter(true)}
             onMouseLeave={() => setIsHoveringFooter(false)}
@@ -129,7 +133,7 @@ const ShopPreviewCard: React.FC<ShopPreviewCardProps> = ({ shop, isVendorView })
                                 <span>Visit</span>
                             </motion.div>
                             <motion.div
-                                onClick={handleEdit}
+                                onClick={handleManage}
                                 className='bg-neutral-200 bg-opacity-50 hover:bg-opacity-100 p-2 px-3 rounded-full flex gap-1 items-center text-sm transition-all cursor-pointer'>
                                 <GearIcon className='w-4 h-4' />
                                 <span>Manage</span>
