@@ -23,11 +23,23 @@ interface UpdateEditorFormProps {
 }
 
 const UpdateEditorForm: React.FC<UpdateEditorFormProps> = ({ shopId, onCancel, onSuccess, mode, initialUpdateObj }) => {
+    let defaultValues: any = {
+        shopId: shopId,
+    };
+
+    if (mode === FormMode.EDIT && initialUpdateObj) {
+        defaultValues = { ...initialUpdateObj };
+
+        if (!initialUpdateObj.callToActionLink) {
+            delete defaultValues.callToActionLink;
+            delete defaultValues.callToActionText;
+        }
+    }
+
     const formMethods = useForm<z.infer<typeof updateFormSchema>>({
         resolver: zodResolver(updateFormSchema),
-        defaultValues: mode === FormMode.EDIT ? initialUpdateObj : {
-            shopId: shopId,
-        }
+        defaultValues: defaultValues,
+
     });
 
     const { control, handleSubmit, formState: { errors, isValid }, trigger } = formMethods;
@@ -51,8 +63,8 @@ const UpdateEditorForm: React.FC<UpdateEditorFormProps> = ({ shopId, onCancel, o
     return (
         <Form {...formMethods}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-                <h1 className='text-2xl font-bold'>New Announcement</h1>
-                <div className='flex divide-x'>
+                <h1 className='text-2xl font-bold'>Post Update</h1>
+                <div className='flex gap-2'>
                     <div className='flex flex-col gap-8 flex-grow pr-4'>
                         <FormField
                             control={control}
@@ -118,13 +130,13 @@ const UpdateEditorForm: React.FC<UpdateEditorFormProps> = ({ shopId, onCancel, o
                             <Button type="submit" disabled={!isValid}>{mode === FormMode.CREATE ? "Post" : "Save"}</Button>
                         </div>
                     </div>
-                    <div className='flex flex-col gap-1 pl-4'>
-                        <div className='font-medium text-sm p-0'>Preview</div>
+                    <div className='flex flex-col gap-1 bg-neutral-200 bg-opacity-75 rounded-md p-6'>
+                        {/* <div className='font-medium text-sm p-0'>Preview</div> */}
                         <UpdateCard
                             isPreview={true}
                             update={{
-                                title: title || "Preview Title",
-                                content: content || "Preview Content",
+                                title: title || "Title...",
+                                content: content || "Description...",
                                 postedAt: new Date(),
                                 callToActionLink: callToActionLink || "",
                                 callToActionText: callToActionLink ? callToActionText || callToActionLink : "",
@@ -132,7 +144,7 @@ const UpdateEditorForm: React.FC<UpdateEditorFormProps> = ({ shopId, onCancel, o
                                 shopId: shopId,
                             }}
                             shopId={shopId}
-                            className='w-[300px]'
+                            className='w-[300px] bg-background'
                         />
                     </div>
                 </div>

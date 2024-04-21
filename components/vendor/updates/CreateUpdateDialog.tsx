@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
 import UpdateEditorForm from "./UpdateEditorForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { FormMode } from "types/form";
 import { Update } from "@prisma/client";
