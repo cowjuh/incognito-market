@@ -22,8 +22,11 @@ const VendorShopPage: NextPageWithLayout = () => {
 
     return (
         <div className="w-full">
-            <div className="w-full flex items-center justify-between p-4">
-                <h1 className="text-xl">{shop.name}</h1>
+            <div className="w-full flex items-start justify-between p-4">
+                <div className="flex flex-col gap-2">
+                    <h1 className="text-xl">{shop.name}</h1>
+                    <p className="text-sm text-muted-foreground">Your shop at a glance</p>
+                </div>
                 <div className="flex items-center gap-4">
                     <p className="text-sm text-neutral-500">Published 20 mins ago</p>
                     <Button onClick={handleVisit}>
