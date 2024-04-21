@@ -5,11 +5,12 @@ interface TextAreaFieldProps {
     field: any;
     label: string;
     placeholder: string;
-    description: string;
+    description?: string;
     isRequired: boolean;
+    error?: string;
 }
 
-const TextAreaField: React.FC<TextAreaFieldProps> = ({ field, label, placeholder, description, isRequired }) => {
+const TextAreaField: React.FC<TextAreaFieldProps> = ({ field, label, placeholder, description, isRequired, error }) => {
     return (
         <FormItem>
             <FormLabel className="flex items-center gap-1">
@@ -23,10 +24,16 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({ field, label, placeholder
             <FormControl>
                 <Textarea placeholder={placeholder} className="resize-none h-36" {...field} />
             </FormControl>
-            <FormDescription>
-                {description}
-            </FormDescription>
-            <FormMessage />
+            {description && (
+                <FormDescription>
+                    {description}
+                </FormDescription>
+            )}
+            {error && (
+                <FormMessage>
+                    {error}
+                </FormMessage>
+            )}
         </FormItem>
     );
 }

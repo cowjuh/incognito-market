@@ -1,7 +1,15 @@
 import { FormControl, FormDescription, FormItem, FormLabel, FormMessage } from "@/ui/form";
 import { Input } from "@/ui/input";
+import { Field } from "react-hook-form";
+interface InputFieldProps {
+    field: any;
+    label: string;
+    placeholder: string;
+    description?: string;
+    isRequired?: boolean;
+}
 
-function InputField({ field, label, placeholder, description, isRequired }) {
+const InputField: React.FC<InputFieldProps> = ({ field, label, placeholder, description, isRequired }) => {
     return (
         <FormItem>
             <FormLabel className="flex items-center gap-1">
@@ -15,9 +23,11 @@ function InputField({ field, label, placeholder, description, isRequired }) {
             <FormControl>
                 <Input placeholder={placeholder} {...field} />
             </FormControl>
-            <FormDescription>
-                {description}
-            </FormDescription>
+            {description && (
+                <FormDescription>
+                    {description}
+                </FormDescription>
+            )}
             <FormMessage />
         </FormItem>
     );
