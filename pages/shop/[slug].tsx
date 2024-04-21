@@ -14,6 +14,7 @@ import Image from "next/image";
 import { parseJson } from "utils/prisma/prismaUtils";
 import { formatPostedAt } from "utils/stringUtils";
 import { Button } from "@/ui/button";
+import UpdateCard from "@/shop/UpdateCard";
 
 const socialMediaIcons = {
     [SocialMediaName.INSTAGRAM]: InstagramLogoIcon,
@@ -75,16 +76,7 @@ const ShopPage: NextPageWithLayout = () => {
                                     <h3 className="font-medium text-neutral-400">UPDATES</h3>
                                     {shop.updates.map((update) => {
                                         return (
-                                            <div className="flex flex-col gap-2 border p-4 rounded-md">
-                                                <p className="font-medium">{update.title}</p>
-                                                <p>{update.content}</p>
-                                                <div className="flex w-full items-center justify-between">
-                                                    <p className="text-neutral-400 text-sm">{formatPostedAt(String(update.postedAt))}</p>
-                                                    {update.callToActionLink && update.callToActionText &&
-                                                        <Button variant="outline" className="bg-inherit hover:bg-neutral-50">{update.callToActionText}</Button>
-                                                    }
-                                                </div>
-                                            </div>
+                                            <UpdateCard update={update} />
                                         )
                                     })}
                                 </div>

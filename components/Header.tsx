@@ -45,7 +45,7 @@ const Header: React.FC = () => {
         {session &&
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Avatar className='flex items-center h-7 w-7'>
+              <Avatar className='flex items-center h-7 w-7 border border-neutral-300'>
                 <AvatarImage src={session.user.image} alt="Avatar" />
               </Avatar>
             </DropdownMenuTrigger>
