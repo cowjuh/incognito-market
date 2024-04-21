@@ -1,28 +1,37 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
-import CreateUpdateForm from "./CreateUpdateForm";
-import { Button } from "@/ui/button";
+import UpdateEditorForm from "./UpdateEditorForm";
 import { useState } from "react";
-import UpdateCard from "@/shop/UpdateCard";
+import { useRouter } from "next/router";
+import { FormMode } from "types/form";
+import { Update } from "@prisma/client";
 
 interface CreateUpdateDialogProps {
     shopId: string;
+    mode: FormMode;
+    initialUpdateObj?: Update;
+    children: React.ReactNode;
 }
 
-const CreateUpdateDialog: React.FC<CreateUpdateDialogProps> = ({ shopId }) => {
+const CreateUpdateDialog: React.FC<CreateUpdateDialogProps> = ({ shopId, mode, initialUpdateObj, children }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const router = useRouter();
+
     const handleCancel = () => {
         setIsOpen(false);
+    }
+
+    const handleOnSuccess = () => {
+        setIsOpen(false);
+        router.reload(); // TODO: Use React Query to refetch the data
     }
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button>
-                    Create Update
-                </Button>
+                {children}
             </DialogTrigger>
             <DialogContent className="sm:max-w-[700px]">
-                <CreateUpdateForm shopId={shopId} onCancel={handleCancel} />
+                <UpdateEditorForm shopId={shopId} onCancel={handleCancel} onSuccess={handleOnSuccess} mode={mode} initialUpdateObj={initialUpdateObj} />
             </DialogContent>
         </Dialog>
     )

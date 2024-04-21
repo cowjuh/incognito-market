@@ -8,19 +8,24 @@ import InputField from '@/form/InputField';
 import TextAreaField from '@/form/TextAreaField';
 import { Button } from '@/ui/button';
 import UpdateCard from '@/shop/UpdateCard';
+import { createUpdate, updateUpdate } from 'services/api/update';
+import { FormMode } from 'types/form';
+import { Update } from '@prisma/client';
 
 type UpdateFormSchema = TypeOf<typeof updateFormSchema>;
-type FormFieldName = keyof UpdateFormSchema;
 
-interface CreateUpdateFormProps {
+interface UpdateEditorFormProps {
     shopId?: string;
     onCancel: () => void;
+    onSuccess: () => void;
+    mode: FormMode;
+    initialUpdateObj?: Update;
 }
 
-const CreateUpdateForm: React.FC<CreateUpdateFormProps> = ({ shopId, onCancel }) => {
+const UpdateEditorForm: React.FC<UpdateEditorFormProps> = ({ shopId, onCancel, onSuccess, mode, initialUpdateObj }) => {
     const formMethods = useForm<z.infer<typeof updateFormSchema>>({
         resolver: zodResolver(updateFormSchema),
-        defaultValues: {
+        defaultValues: mode === FormMode.EDIT ? initialUpdateObj : {
             shopId: shopId,
         }
     });
@@ -28,12 +33,20 @@ const CreateUpdateForm: React.FC<CreateUpdateFormProps> = ({ shopId, onCancel })
     const { control, handleSubmit, formState: { errors, isValid }, trigger } = formMethods;
 
     const onSubmit = (data: UpdateFormSchema) => {
-        console.log(data);
+        if (mode === FormMode.CREATE) {
+            createUpdate(data).then(() => {
+                onSuccess();
+            });
+        } else if (mode === FormMode.EDIT && initialUpdateObj) {
+            updateUpdate(initialUpdateObj.id, data).then(() => {
+                onSuccess();
+            });
+        }
     };
 
     const watchedFields = useWatch({ control });
 
-    const { title, description: content, callToActionLink, callToActionText } = watchedFields;
+    const { title, content, callToActionLink, callToActionText } = watchedFields;
 
     return (
         <Form {...formMethods}>
@@ -55,22 +68,20 @@ const CreateUpdateForm: React.FC<CreateUpdateFormProps> = ({ shopId, onCancel })
                         />
                         <FormField
                             control={control}
-                            name="description"
+                            name="content"
                             render={({ field }) => (
                                 <TextAreaField
                                     field={{
                                         ...field,
                                         onChange: async (e) => {
-                                            // Update the value
                                             field.onChange(e);
-                                            // Trigger validation
-                                            await trigger("description");
+                                            await trigger("content");
                                         },
                                     }}
                                     label="Description"
                                     placeholder="ie: the 4o4.space website is live!"
                                     isRequired={true}
-                                    error={errors.description?.message} // Assuming TextAreaField accepts an error prop
+                                    error={errors.content?.message}
                                 />
                             )}
                         />
@@ -104,7 +115,7 @@ const CreateUpdateForm: React.FC<CreateUpdateFormProps> = ({ shopId, onCancel })
                         )}
                         <div className='flex gap-4'>
                             <Button type='button' variant="outline" onClick={onCancel}>Cancel</Button>
-                            <Button type="submit" disabled={!isValid}>Post</Button>
+                            <Button type="submit" disabled={!isValid}>{mode === FormMode.CREATE ? "Post" : "Save"}</Button>
                         </div>
                     </div>
                     <div className='flex flex-col gap-1 pl-4'>
@@ -116,8 +127,11 @@ const CreateUpdateForm: React.FC<CreateUpdateFormProps> = ({ shopId, onCancel })
                                 content: content || "Preview Content",
                                 postedAt: new Date(),
                                 callToActionLink: callToActionLink || "",
-                                callToActionText: callToActionLink ? callToActionText || callToActionLink : ""
+                                callToActionText: callToActionLink ? callToActionText || callToActionLink : "",
+                                id: "preview-update",
+                                shopId: shopId,
                             }}
+                            shopId={shopId}
                             className='w-[300px]'
                         />
                     </div>
@@ -127,4 +141,4 @@ const CreateUpdateForm: React.FC<CreateUpdateFormProps> = ({ shopId, onCancel })
     );
 };
 
-export default CreateUpdateForm;
+export default UpdateEditorForm;
