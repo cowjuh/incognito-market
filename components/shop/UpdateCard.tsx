@@ -2,24 +2,21 @@ import React from 'react';
 import { Button } from "@/ui/button";
 import { formatPostedAt } from "utils/stringUtils";
 import { cn } from "@/lib/utils";
-
-interface Update {
-    title: string;
-    content: string;
-    postedAt: Date | string;
-    callToActionLink?: string;
-    callToActionText?: string;
-}
-
+import CreateUpdateDialog from '@/vendor/updates/CreateUpdateDialog';
+import { FormMode } from 'types/form';
+import { Pencil1Icon } from '@radix-ui/react-icons';
+import { Update } from '@prisma/client';
 
 interface UpdateCardProps extends React.HTMLProps<HTMLDivElement> {
     update: Update;
+    shopId: string;
     isPreview?: boolean;
+    isVendorView?: boolean;
 }
 
-const UpdateCard: React.FC<UpdateCardProps> = ({ update, isPreview, className, ...props }) => {
+const UpdateCard: React.FC<UpdateCardProps> = ({ update, shopId, isPreview, isVendorView, className, ...props }) => {
     return (
-        <div className={cn("flex flex-col gap-2 border p-4 rounded-md", className)} {...props}>
+        <div className={cn("flex flex-col gap-2 border p-4 rounded-md relative", className)} {...props}>
             <p className="font-medium">{update.title}</p>
             <p>{update.content}</p>
             <div className="flex w-full items-center justify-between">
@@ -32,6 +29,15 @@ const UpdateCard: React.FC<UpdateCardProps> = ({ update, isPreview, className, .
                     </Button>
                 )}
             </div>
+            {isVendorView &&
+                <CreateUpdateDialog shopId={shopId} mode={FormMode.EDIT} initialUpdateObj={update}>
+                    <div className="absolute top-4 right-4 flex items-center justify-center w-10 h-10">
+                        <Button variant="ghost" className="p-0 w-full">
+                            <Pencil1Icon />
+                        </Button>
+                    </div>
+                </CreateUpdateDialog>
+            }
         </div>
     );
 };
