@@ -19,18 +19,32 @@ import ImageCropDialog from '@/dialog/ImageCropDialog';
 import { onSubmit } from 'utils/shopUtils';
 import TextAreaField from '@/form/TextAreaField';
 import { useSession } from 'next-auth/react';
+import { Shop } from '@prisma/client';
+import { FormMode } from 'types/form';
 
 type EntityFormSchema = TypeOf<typeof entityFormSchema>;
 type FormFieldName = keyof EntityFormSchema;
 
-export function EntityEditorForm() {
+interface EntityEditorFormProps {
+    mode: FormMode;
+    entity?: Shop;
+}
+
+const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
     const { data: session } = useSession();
 
+    let defaultValues: EntityFormSchema;
+
+    if (mode === FormMode.EDIT && entity) {
+        defaultValues = entity;
+    }
+
     const form = useForm<z.infer<typeof entityFormSchema>>({
-        resolver: zodResolver(entityFormSchema)
+        resolver: zodResolver(entityFormSchema),
+        defaultValues
     })
 
     useEffect(() => {
@@ -71,10 +85,12 @@ export function EntityEditorForm() {
     ];
 
     const [profilePictureFile, setProfilePictureFile] = useState<File | null>(null);
+    const [profilePictureURL, setProfilePictureURL] = useState<string | null>(mode === FormMode.EDIT ? entity?.profilePicture : null);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
             setProfilePictureFile(event.target.files[0]);
+            setProfilePictureURL(URL.createObjectURL(event.target.files[0]));
         }
     };
 
@@ -101,7 +117,16 @@ export function EntityEditorForm() {
         <Form {...form}>
             <form onSubmit={form.handleSubmit((values) => {
                 if (session?.user) {
-                    onSubmit(values, profilePictureFile, session.user.id);
+                    const changes = Object.keys(values).reduce((acc, key) => {
+                        if (values[key] !== defaultValues[key]) {
+                            acc[key] = values[key];
+                        }
+                        return acc;
+                    }, {});
+
+                    const profilePictureFileToUpload = profilePictureURL === entity.profilePicture ? profilePictureFile : null;
+
+                    onSubmit(changes, profilePictureFileToUpload, session.user.id, mode, entity?.id);
                 } else {
                     console.error('User not logged in');
                 }
@@ -110,24 +135,24 @@ export function EntityEditorForm() {
                 <div className='flex items-start gap-16'>
                     <div className='flex flex-col gap-4'>
                         <div className='h-36 w-36 bg-neutral-200 rounded-full relative'>
-                            {profilePictureFile &&
+                            {profilePictureURL &&
                                 <Image
-                                    src={URL.createObjectURL(profilePictureFile)}
+                                    src={profilePictureURL}
                                     alt="Profile Picture"
                                     width={200}
                                     height={200}
                                     className='h-36 w-36 object-cover object-center rounded-full'
                                 />
                             }
-                            <div className={`absolute inset-0 bg-black flex items-center justify-center rounded-full cursor-pointer ${profilePictureFile ? 'hover:opacity-60 opacity-0' : 'opacity-60'}`} onClick={() => document.getElementById('fileInput')?.click()}>
+                            <div className={`absolute inset-0 bg-black flex items-center justify-center rounded-full cursor-pointer ${profilePictureURL ? 'hover:opacity-60 opacity-0' : 'opacity-60'}`} onClick={() => document.getElementById('fileInput')?.click()}>
                                 <ImageIcon className='text-white w-6 h-6' />
                             </div>
                             <input id='fileInput' type='file' onChange={handleFileChange} className='hidden' />
                         </div>
                     </div>
                     <div className='flex flex-col gap-10 flex-grow'>
-                        {profilePictureFile &&
-                            <ImageCropDialog src={URL.createObjectURL(profilePictureFile)} onSave={handleSaveImage} />
+                        {profilePictureURL &&
+                            <ImageCropDialog src={profilePictureURL} onSave={handleSaveImage} />
                         }
 
                         <div className='flex flex-col gap-10 flex-grow'>
@@ -143,7 +168,6 @@ export function EntityEditorForm() {
                                                 render={({ field }) => {
                                                     const isTextArea = isFieldTextArea(entityFormSchema, name as FormFieldName);
                                                     const isRequired = isFieldRequired(entityFormSchema, name as FormFieldName);
-                                                    console.log('isTextArea', isTextArea);
                                                     return (
                                                         <>
                                                             {isTextArea &&
@@ -265,8 +289,11 @@ export function EntityEditorForm() {
                         </div>
                     </div>
                 </div>
-                <Button type="submit">Submit</Button>
+                <Button type="submit">{mode === FormMode.EDIT ? 'Update' : 'Create'}</Button>
             </form>
         </Form>
     )
 }
+
+export { EntityEditorForm };
+

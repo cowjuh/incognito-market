@@ -3,6 +3,7 @@ import MainLayout from "layout/MainLayout";
 import { NextPageWithLayout } from "layout/NextPageWithLayout";
 import PaddedLayout from "layout/PaddedLayout";
 import { ReactNode } from "react";
+import { FormMode } from "types/form";
 
 const EditorPage: NextPageWithLayout = () => {
     return (
@@ -11,7 +12,7 @@ const EditorPage: NextPageWithLayout = () => {
                 <h1 className="text-xl">Shop Editor</h1>
                 <p className="text-neutral-400">Set up and edit your shop</p>
             </div>
-            <EntityEditorForm />
+            <EntityEditorForm mode={FormMode.EDIT} />
         </div>
     )
 }
