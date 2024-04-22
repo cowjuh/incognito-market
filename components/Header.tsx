@@ -53,19 +53,19 @@ const Header: React.FC = () => {
                 <AvatarImage src={session.user.image} alt="Avatar" />
               </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className='w-56 text-sm'>
-              <DropdownMenuLabel>{session.user.name} ({session.user.email})</DropdownMenuLabel>
+            <DropdownMenuContent className='w-72 text-sm'>
+              <DropdownMenuLabel className='p-3'>{session.user.name} ({session.user.email})</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={handleMyShops} className='flex items-center gap-2'>
+              <DropdownMenuItem onSelect={handleMyShops} className='flex items-center gap-2 p-3'>
                 <BuildingStorefrontIcon className='w-4 h-4' />
                 <span>Dashboard</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onSelect={handleAddEntity} className='flex items-center gap-2'>
+              <DropdownMenuItem onSelect={handleAddEntity} className='flex items-center gap-2 p-3'>
                 <PlusIcon className='w-4 h-4' />
                 <span>Create shop</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={handleSignOut} className='flex items-center gap-2'>
+              <DropdownMenuItem onSelect={handleSignOut} className='flex items-center gap-2 p-3'>
                 <ExitIcon className='w-4 h-4' />
                 <span>Sign out</span>
               </DropdownMenuItem>
