@@ -4,9 +4,10 @@ import { formatPostedAt } from "utils/stringUtils";
 import { cn } from "@/lib/utils";
 import CreateUpdateDialog from '@/vendor/updates/CreateUpdateDialog';
 import { FormMode } from 'types/form';
-import { Pencil1Icon, TrashIcon } from '@radix-ui/react-icons';
+import { ExternalLinkIcon, Pencil1Icon, TrashIcon } from '@radix-ui/react-icons';
 import { Update } from '@prisma/client';
 import { deleteUpdate } from 'services/api/update';
+import Link from 'next/link';
 
 interface UpdateCardProps extends React.HTMLProps<HTMLDivElement> {
     update: Update;
@@ -32,9 +33,12 @@ const UpdateCard: React.FC<UpdateCardProps> = ({ update, shopId, isPreview, isVe
                     {isPreview ? "3 min ago" : formatPostedAt(String(update.postedAt))}
                 </p>
                 {update.callToActionLink && update.callToActionText && (
-                    <Button variant="outline" className="bg-inherit hover:bg-neutral-50">
-                        {update.callToActionText}
-                    </Button>
+                    <Link href={update.callToActionLink}>
+                        <Button variant="outline" className="flex items-center gap-2 bg-inherit hover:bg-neutral-50">
+                            {update.callToActionText}
+                            <ExternalLinkIcon className='w-4 h-4' />
+                        </Button>
+                    </Link>
                 )}
             </div>
             {isVendorView &&
