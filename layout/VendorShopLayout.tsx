@@ -15,9 +15,7 @@ const VendorShopLayout: React.FC<VendorShopLayoutProps> = ({ children, className
     const { shop } = useShop(slug as string);
     return (
         <div className="flex w-full flex-grow divide-x">
-            {shop && (
-                <ShopSettingsSidebar activeShop={shop} />
-            )}
+            <ShopSettingsSidebar activeShop={shop} />
             <div className={cn("w-full", className)}>
                 {children}
             </div>

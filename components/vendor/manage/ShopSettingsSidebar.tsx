@@ -22,33 +22,38 @@ export default function ShopSettingsSidebar({ activeShop }: ShopSettingsSidebarP
 
     return (
         <nav className="flex flex-col gap-4 text-sm text-muted-foreground flex-grow max-w-[400px] min-w-[250px] p-4">
-            <Select onValueChange={handleOnShopChange}>
-                <SelectTrigger>
-                    <div className="flex items-center gap-2 h-7">
-                        <Avatar src={activeShop.profilePicture} alt={activeShop.name} className="w-5 h-5" />
-                        <SelectValue placeholder={activeShop.name} >
-                            {activeShop.name}
-                        </SelectValue>
-                    </div>
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectGroup>
-                        <SelectLabel>Select a shop</SelectLabel>
-                        {shops.map((shop) => (
-                            <SelectItem key={shop.id} value={shop.id}>
+            {activeShop &&
+                <>
+                    <Select onValueChange={handleOnShopChange} value={activeShop.id}>
+                        <SelectTrigger>
+                            <SelectValue placeholder={activeShop.name}>
                                 <div className="flex items-center gap-2 h-7">
-                                    <Avatar src={shop.profilePicture} alt={shop.name} className="w-5 h-5" />
-                                    {shop.name}
+                                    <Avatar src={activeShop.profilePicture} alt={activeShop.name} className="w-5 h-5" />
+                                    {activeShop.name}
                                 </div>
-                            </SelectItem>
-                        ))}
-                    </SelectGroup>
-                </SelectContent>
-            </Select>
-            <NavLink href={`/vendor/shop/dashboard/${activeShop.id}`}>Dashboard</NavLink>
-            <NavLink href={`/vendor/shop/updates/${activeShop.id}`} >Updates</NavLink>
-            <NavLink href={`/vendor/shop/members/${activeShop.id}`}>Members</NavLink>
-            <NavLink href={`/vendor/shop/events/${activeShop.id}`} isDisabled>Events</NavLink>
+                            </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel>Select a shop</SelectLabel>
+                                {shops.map((shop) => (
+                                    <SelectItem key={shop.id} value={shop.id}>
+                                        <div className="flex items-center gap-2 h-7">
+                                            <Avatar src={shop.profilePicture} alt={shop.name} className="w-5 h-5" />
+                                            {shop.name}
+                                        </div>
+                                    </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                    <NavLink href={`/vendor/shop/dashboard/${activeShop.id}`}>Dashboard</NavLink>
+                    <NavLink href={`/vendor/shop/details/${activeShop.id}`}>Details</NavLink>
+                    <NavLink href={`/vendor/shop/updates/${activeShop.id}`} >Updates</NavLink>
+                    <NavLink href={`/vendor/shop/members/${activeShop.id}`}>Members</NavLink>
+                    <NavLink href={`/vendor/shop/events/${activeShop.id}`} isDisabled>Events</NavLink>
+                </>
+            }
         </nav>
     );
 }

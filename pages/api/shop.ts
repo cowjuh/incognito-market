@@ -36,12 +36,26 @@ export default async function handler(
         // Handle shop update
         try {
             const dataToUpdate: Partial<Shop> = {};
-            if (body.profilePicture) {
-                dataToUpdate.profilePicture = body.profilePicture;
-            }
-            if (body.name) {
-                dataToUpdate.name = body.name;
-            }
+            const updatableFields = [
+                'name',
+                'username',
+                'email',
+                'phoneNumber',
+                'websiteLink',
+                'bio',
+                'description',
+                'physicalAddress',
+                'country',
+                'state',
+                'city',
+                'profilePicture',
+                'headerImage',
+            ];
+            updatableFields.forEach(field => {
+                if (body[field] !== undefined) {
+                    dataToUpdate[field] = body[field];
+                }
+            });
 
             const shop = await prisma.shop.update({
                 where: { id: body.id },

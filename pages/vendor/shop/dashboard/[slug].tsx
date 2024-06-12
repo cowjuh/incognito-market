@@ -1,10 +1,8 @@
 import { Button } from "@/ui/button";
-import ShopSettingsSidebar from "@/vendor/manage/ShopSettingsSidebar";
 import { useShop } from "hooks/useShop";
 import FullWidthLayout from "layout/FullWidthLayout";
 import MainLayout from "layout/MainLayout";
 import { NextPageWithLayout } from "layout/NextPageWithLayout";
-import PaddedLayout from "layout/PaddedLayout";
 import VendorShopLayout from "layout/VendorShopLayout";
 import { useRouter } from "next/router";
 

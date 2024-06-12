@@ -76,7 +76,7 @@ const ShopPage: NextPageWithLayout = () => {
                                     <h3 className="font-medium text-neutral-400">UPDATES</h3>
                                     {shop.updates.map((update) => {
                                         return (
-                                            <UpdateCard update={update} />
+                                            <UpdateCard update={update} shopId={shop.id} />
                                         )
                                     })}
                                 </div>
@@ -85,20 +85,6 @@ const ShopPage: NextPageWithLayout = () => {
                     }
                 </div>
                 <div className="p-4 flex flex-col gap-10 w-full">
-                    <div className="w-full flex flex-col gap-2">
-                        <h3 className="font-medium text-neutral-400">ABOUT</h3>
-                        <div className="max-w-[600px]">
-                            {shop && !showSkeleton && shop.description}
-                            {showSkeleton &&
-                                <div className="w-full flex flex-col gap-3">
-                                    <Skeleton className="w-full bg-neutral-100 h-4" />
-                                    <Skeleton className="w-full bg-neutral-100 h-4" />
-                                    <Skeleton className="w-full bg-neutral-100 h-4" />
-                                    <Skeleton className="w-[50%] bg-neutral-100 h-4" />
-                                </div>
-                            }
-                        </div>
-                    </div>
                     <div className="w-full flex flex-col gap-2">
                         <h3 className="font-medium text-neutral-400">FEATURED</h3>
                         {shop && shop.featuredItems && shop.featuredItems.map((item, i) => {
@@ -121,6 +107,20 @@ const ShopPage: NextPageWithLayout = () => {
                                 </div>
                             )
                         })}
+                    </div>
+                    <div className="w-full flex flex-col gap-2">
+                        <h3 className="font-medium text-neutral-400">ABOUT</h3>
+                        <div className="max-w-[600px]">
+                            {shop && !showSkeleton && shop.description}
+                            {showSkeleton &&
+                                <div className="w-full flex flex-col gap-3">
+                                    <Skeleton className="w-full bg-neutral-100 h-4" />
+                                    <Skeleton className="w-full bg-neutral-100 h-4" />
+                                    <Skeleton className="w-full bg-neutral-100 h-4" />
+                                    <Skeleton className="w-[50%] bg-neutral-100 h-4" />
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
