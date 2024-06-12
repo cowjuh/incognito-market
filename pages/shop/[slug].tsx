@@ -15,6 +15,7 @@ import { parseJson } from "utils/prisma/prismaUtils";
 import { formatPostedAt } from "utils/stringUtils";
 import { Button } from "@/ui/button";
 import UpdateCard from "@/shop/UpdateCard";
+import ShopOwnerBanner from "@/ShopOwnerBanner";
 
 const socialMediaIcons = {
     [SocialMediaName.INSTAGRAM]: InstagramLogoIcon,
@@ -31,6 +32,7 @@ const ShopPage: NextPageWithLayout = () => {
 
     return (
         <div className="max-w-[1500px] w-full">
+            {shop && <ShopOwnerBanner shop={shop} />}
             <div className="p-4 pb-0 w-full">
                 <Link href={`/`} className="flex items-center gap-1 text-neutral-500 hover:text-neutral-700">
                     <ChevronLeftIcon className="w-4 h-4" />
