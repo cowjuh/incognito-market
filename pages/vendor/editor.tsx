@@ -12,7 +12,7 @@ const EditorPage: NextPageWithLayout = () => {
                 <h1 className="text-xl">Shop Editor</h1>
                 <p className="text-neutral-400">Set up and edit your shop</p>
             </div>
-            <EntityEditorForm mode={FormMode.EDIT} />
+            <EntityEditorForm mode={FormMode.CREATE} />
         </div>
     )
 }

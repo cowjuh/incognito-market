@@ -38,6 +38,17 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
 
     let defaultValues: EntityFormSchema;
 
+    if (mode === FormMode.CREATE) {
+        defaultValues = {
+            name: '',
+            username: '',
+            email: '',
+            phoneNumber: '',
+        }
+    }
+    if (mode === FormMode.EDIT && !entity) {
+        throw new Error('Entity not found');
+    }
     if (mode === FormMode.EDIT && entity) {
         defaultValues = entity;
     }
@@ -123,8 +134,7 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
                         }
                         return acc;
                     }, {});
-
-                    const profilePictureFileToUpload = profilePictureURL === entity.profilePicture ? profilePictureFile : null;
+                    const profilePictureFileToUpload = mode === FormMode.EDIT && profilePictureURL === entity?.profilePicture ? undefined : profilePictureFile;
 
                     onSubmit(changes, profilePictureFileToUpload, session.user.id, mode, entity?.id);
                 } else {

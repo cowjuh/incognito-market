@@ -10,9 +10,11 @@ export async function onSubmit(values: TypeOf<typeof entityFormSchema>, profileP
     const shopObject: Partial<ShopWithRelations> = {
         ...values
     }
+    console.log('Profile picture file:', profilePictureFile);
 
     if (profilePictureFile) {
         profilePicturePublicURL = await uploadFile(profilePictureFile);
+        console.log('Profile picture uploaded:', profilePicturePublicURL);
         shopObject.profilePicture = profilePicturePublicURL;
     }
 
