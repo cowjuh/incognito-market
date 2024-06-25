@@ -9,8 +9,8 @@ interface ShopOwnerBannerProps {
 }
 
 const ShopOwnerBanner = ({ shop }: ShopOwnerBannerProps) => {
-    return <Alert className="flex items-center justify-between rounded-none bg-white bg-opacity-60">
-        <AlertTitle className="text-lg font-medium flex items-center gap-2">
+    return <Alert className="flex items-center justify-between rounded-none bg-neutral-50 bg-opacity-60 border-t-0">
+        <AlertTitle className="text-sm font-medium flex items-center gap-2">
             <UserIcon className="h-4 w-4" />
             You are the owner of this shop
         </AlertTitle>
