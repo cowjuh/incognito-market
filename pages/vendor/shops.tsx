@@ -1,4 +1,5 @@
 import ShopPreviewCard from '@/shop/ShopPreviewCard'
+import { useUserAuthentication } from 'hooks/useUserAuthentication'
 import { useUserShops } from 'hooks/useUserShops'
 import MainLayout from 'layout/MainLayout'
 import { NextPageWithLayout } from 'layout/NextPageWithLayout'
@@ -7,8 +8,10 @@ import { useSession } from 'next-auth/react'
 import { ReactNode } from 'react'
 
 const UserShops: NextPageWithLayout = () => {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const { shops, loading: shopsLoading } = useUserShops(session?.user?.id);
+
+    useUserAuthentication()
 
     return (
         <div>

@@ -1,4 +1,6 @@
+import ShopPreviewCard from "@/shop/ShopPreviewCard";
 import { Button } from "@/ui/button";
+import DashboardStats from "@/vendor/manage/DashboardStats";
 import { useShop } from "hooks/useShop";
 import FullWidthLayout from "layout/FullWidthLayout";
 import MainLayout from "layout/MainLayout";
@@ -32,7 +34,9 @@ const VendorShopPage: NextPageWithLayout = () => {
                     </Button>
                 </div>
             </div>
-            <p>{shop.description}</p>
+            <div className="p-4">
+                <DashboardStats views={78} clicks={123} sales={50} newCustomers={12} />
+            </div>
         </div>
     )
 }

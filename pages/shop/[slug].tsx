@@ -12,10 +12,9 @@ import { ChevronLeftIcon, InstagramLogoIcon, TwitterLogoIcon } from "@radix-ui/r
 import { SiFacebook, SiTiktok } from '@icons-pack/react-simple-icons';
 import Image from "next/image";
 import { parseJson } from "utils/prisma/prismaUtils";
-import { formatPostedAt } from "utils/stringUtils";
-import { Button } from "@/ui/button";
 import UpdateCard from "@/shop/UpdateCard";
 import ShopOwnerBanner from "@/ShopOwnerBanner";
+import { useSession } from "next-auth/react";
 
 const socialMediaIcons = {
     [SocialMediaName.INSTAGRAM]: InstagramLogoIcon,
@@ -26,13 +25,14 @@ const socialMediaIcons = {
 
 const ShopPage: NextPageWithLayout = () => {
     const router = useRouter();
+    const session = useSession();
     const { slug } = router.query;
     const { shop, loading, error } = useShop(slug as string);
     const showSkeleton = !shop || loading;
 
     return (
         <div className="max-w-[1500px] w-full">
-            {shop && <ShopOwnerBanner shop={shop} />}
+            {shop && session.data?.user?.id === shop.ownerId && <ShopOwnerBanner shop={shop} />}
             <div className="p-4 pb-0 w-full">
                 <Link href={`/`} className="flex items-center gap-1 text-neutral-500 hover:text-neutral-700">
                     <ChevronLeftIcon className="w-4 h-4" />
