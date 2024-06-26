@@ -15,6 +15,7 @@ import { parseJson } from "utils/prisma/prismaUtils";
 import UpdateCard from "@/shop/UpdateCard";
 import ShopOwnerBanner from "@/ShopOwnerBanner";
 import { useSession } from "next-auth/react";
+import ShopRating from "@/rating/ShopRating";
 
 const socialMediaIcons = {
     [SocialMediaName.INSTAGRAM]: InstagramLogoIcon,
@@ -49,6 +50,7 @@ const ShopPage: NextPageWithLayout = () => {
                                 <p className="text-neutral-400">@{shop.username}</p>
                                 <p>{shop.bio}</p>
                             </div>
+                            <ShopRating averageRating={shop.averageRating} numberOfRatings={shop.numberOfRatings} />
                             <div className="flex flex-col gap-1">
                                 <h3 className="font-medium text-neutral-400">CONTACT</h3>
                                 <p>{shop.websiteLink}</p>
