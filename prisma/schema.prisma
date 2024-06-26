@@ -48,6 +48,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   shops         Shop[]
+  ratings     Rating[]
 }
 
 model VerificationToken {
@@ -115,8 +116,25 @@ model Shop {
   city            String?
   profilePicture  String?
   headerImage     String?
+  averageRating   Float?
+  numberOfRatings Int?
   owner           User          @relation(fields: [ownerId], references: [id])
   socialMedia     SocialMedia[]
   featuredItems   FeaturedItem[]
   updates         Update[]
+  ratings     Rating[]
+}
+
+model Rating {
+  id          String   @id @default(cuid())
+  score       Int      // Rating out of a predefined scale, e.g., 1-5
+  comment     String?
+  userId      String   @map("user_id")
+  shopId      String   @map("shop_id")
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@index([userId, shopId])
 }
