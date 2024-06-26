@@ -11,7 +11,6 @@ import { Country, State, City } from 'country-state-city';
 import { isFieldRequired, isFieldTextArea } from 'utils/zod/zodUtils';
 import InputField from '@/form/InputField';
 import { Button } from '@/ui/button';
-import { uploadFile } from 'services/uploadService';
 import Image from 'next/image';
 import { useDropzone } from 'react-dropzone';
 import { ImageIcon } from '@radix-ui/react-icons';
@@ -21,6 +20,7 @@ import TextAreaField from '@/form/TextAreaField';
 import { useSession } from 'next-auth/react';
 import { Shop } from '@prisma/client';
 import { FormMode } from 'types/form';
+import { useRouter } from 'next/router';
 
 type EntityFormSchema = TypeOf<typeof entityFormSchema>;
 type FormFieldName = keyof EntityFormSchema;
@@ -105,13 +105,6 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
         }
     };
 
-    const handleFileUpload = async () => {
-        if (profilePictureFile) {
-            const publicURL = await uploadFile(profilePictureFile);
-            console.log('File uploaded at: ', publicURL);
-        }
-    };
-
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop: (acceptedFiles) => {
             setProfilePictureFile(acceptedFiles[0]);
@@ -123,10 +116,11 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
         setProfilePictureFile(file);
     }
 
+    const router = useRouter();
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit((values) => {
+            <form onSubmit={form.handleSubmit(async (values) => {
                 if (session?.user) {
                     const changes = Object.keys(values).reduce((acc, key) => {
                         if (values[key] !== defaultValues[key]) {
@@ -136,7 +130,8 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
                     }, {});
                     const profilePictureFileToUpload = mode === FormMode.EDIT && profilePictureURL === entity?.profilePicture ? undefined : profilePictureFile;
 
-                    onSubmit(changes, profilePictureFileToUpload, session.user.id, mode, entity?.id);
+                    await onSubmit(changes, profilePictureFileToUpload, session.user.id, mode, entity?.id);
+                    router.push(`/vendor/shops`);
                 } else {
                     console.error('User not logged in');
                 }
