@@ -34,11 +34,11 @@ const TagPage: NextPageWithLayout = () => {
     }, [slug]);
 
     return <div>
-        <ul>
+        <div className="flex flex-wrap gap-4">
             {shops && shops.map((shop) => (
                 <ShopPreviewCard shop={shop} />
             ))}
-        </ul>
+        </div>
     </div>;
 };
 
