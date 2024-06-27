@@ -100,10 +100,18 @@ model Update {
   @@index([shopId])
 }
 
+model TagType {
+  id      String   @id @default(cuid())
+  name    String   @unique
+  tags    Tag[]
+}
+
 model Tag {
   id      String   @id @default(cuid())
   name    String   @unique
   shops   ShopTag[]
+  tagTypeId String?
+  tagType TagType? @relation(fields: [tagTypeId], references: [id])
 }
 
 model ShopTag {
