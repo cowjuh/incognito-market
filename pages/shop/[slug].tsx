@@ -40,8 +40,8 @@ const ShopPage: NextPageWithLayout = () => {
                     <span>Back</span>
                 </Link>
             </div>
-            <div className="flex w-full h-full">
-                <div className="w-[20%] min-w-[300px] max-w-[400px] flex flex-col gap-4 flex-grow p-4">
+            <div className="flex w-full h-full gap-10">
+                <div className="w-[15%] min-w-[300px] max-w-[350px] flex flex-col gap-4 flex-grow p-4">
                     {shop &&
                         <div className="flex flex-col gap-10">
                             <div className="flex flex-col gap-2">
