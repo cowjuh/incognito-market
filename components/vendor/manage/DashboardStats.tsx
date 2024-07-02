@@ -9,7 +9,7 @@ interface DashboardStatsProps {
 
 const Stat: React.FC<{ title: string, value: number }> = ({ title, value }) => (
     <div className="text-center">
-        <h2 className="text-lg font-semibold text-gray-700">{title}</h2>
+        <h2 className="text-lg font-semibold text-neutral-700">{title}</h2>
         <p className="text-2xl font-bold text-neutral-800">{value}</p>
     </div>
 );

@@ -14,7 +14,7 @@ const NavLink: React.FC<NavLinkProps> = ({ href, children, isDisabled }) => {
 
     const linkClass = isActive
         ? 'font-semibold text-primary hover:text-primary-dark'
-        : 'text-gray-600 hover:text-gray-900';
+        : 'text-neutral-600 hover:text-neutral-900';
 
     return (
         <div className={`flex items-center gap-2 h-6 w-full justify-between ${isDisabled ? 'pointer-events-none' : 'cursor-pointer'}`}>

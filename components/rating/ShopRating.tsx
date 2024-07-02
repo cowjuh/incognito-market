@@ -16,7 +16,7 @@ const ShopRating = ({ averageRating, numberOfRatings }: ShopRatingProps) => {
                 <div className="flex items-center relative">
                     {/* Base layer of gray stars */}
                     {Array.from({ length: totalStars }).map((_, index) => (
-                        <div key={`base-${index}`} className="w-5 h-5 text-gray-200 absolute inline-block" style={{ left: `${index * 1.25}rem` }}>★</div>
+                        <div key={`base-${index}`} className="w-5 h-5 text-neutral-200 absolute inline-block" style={{ left: `${index * 1.25}rem` }}>★</div>
                     ))}
                     {/* Full blue stars */}
                     {Array.from({ length: fullStars }).map((_, index) => (
@@ -34,7 +34,7 @@ const ShopRating = ({ averageRating, numberOfRatings }: ShopRatingProps) => {
                     ))}
                 </div>
             ) : (
-                <div className='text-gray-400'>No ratings yet</div>
+                <div className='text-neutral-400'>No ratings yet</div>
             )}
         </div>
     );
