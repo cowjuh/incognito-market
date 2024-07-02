@@ -31,10 +31,12 @@ interface EntityEditorFormProps {
 }
 
 const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
+    const { data: session } = useSession();
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
-    const { data: session } = useSession();
+    const [originalProfilePictureURL, setOriginalProfilePictureURL] = useState<string | null>(null);
+    const [croppedProfilePictureURL, setCroppedProfilePictureURL] = useState<string | null>(mode === FormMode.EDIT ? entity?.profilePicture : null);
 
     let defaultValues: EntityFormSchema;
 
@@ -100,20 +102,31 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
-            setProfilePictureFile(event.target.files[0]);
-            setProfilePictureURL(URL.createObjectURL(event.target.files[0]));
+            const file = event.target.files[0];
+            setProfilePictureFile(file);
+            const url = URL.createObjectURL(file);
+            setOriginalProfilePictureURL(url);
+            setCroppedProfilePictureURL(url); // Initially set both to the same URL
         }
     };
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop: (acceptedFiles) => {
-            setProfilePictureFile(acceptedFiles[0]);
+            if (acceptedFiles.length > 0) {
+                const file = acceptedFiles[0];
+                setProfilePictureFile(file);
+                const url = URL.createObjectURL(file);
+                setOriginalProfilePictureURL(url);
+                setCroppedProfilePictureURL(url); // Initially set both to the same URL
+            }
         }
     });
 
     const handleSaveImage = async (blob: Blob) => {
         const file = new File([blob], 'profilePicture.png', { type: 'image/png' });
         setProfilePictureFile(file);
+        const url = URL.createObjectURL(blob);
+        setCroppedProfilePictureURL(url);
     }
 
     const router = useRouter();
@@ -140,20 +153,23 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
                 <div className='flex items-start gap-16'>
                     <div className='flex flex-col gap-4'>
                         <div className='h-36 w-36 bg-neutral-200 rounded-full relative'>
-                            {profilePictureURL &&
+                            {croppedProfilePictureURL &&
                                 <Image
-                                    src={profilePictureURL}
+                                    src={croppedProfilePictureURL}
                                     alt="Profile Picture"
                                     width={200}
                                     height={200}
                                     className='h-36 w-36 object-cover object-center rounded-full'
                                 />
                             }
-                            <div className={`absolute inset-0 bg-black flex items-center justify-center rounded-full cursor-pointer ${profilePictureURL ? 'hover:opacity-60 opacity-0' : 'opacity-60'}`} onClick={() => document.getElementById('fileInput')?.click()}>
+                            <div className={`absolute inset-0 bg-black flex items-center justify-center rounded-full cursor-pointer ${croppedProfilePictureURL ? 'hover:opacity-60 opacity-0' : 'opacity-60'}`} onClick={() => document.getElementById('fileInput')?.click()}>
                                 <ImageIcon className='text-white w-6 h-6' />
                             </div>
                             <input id='fileInput' type='file' onChange={handleFileChange} className='hidden' />
                         </div>
+                        {originalProfilePictureURL &&
+                            <ImageCropDialog src={originalProfilePictureURL} onSave={handleSaveImage} />
+                        }
                     </div>
                     <div className='flex flex-col gap-10 flex-grow'>
                         {profilePictureURL &&

@@ -2,6 +2,7 @@ import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { SelectSeparator } from "@/ui/select";
 import { Separator } from "@/ui/separator";
+import { CropIcon } from "@radix-ui/react-icons";
 import { useState, useRef } from "react";
 import ReactCrop, { centerCrop, makeAspectCrop, Crop, PixelCrop, PercentCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
@@ -95,7 +96,10 @@ const ImageCropDialog: React.FC<ImageCropDialogProps> = ({ src, onSave }) => {
 
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger>Open</DialogTrigger>
+            <DialogTrigger className="flex items-center gap-2">
+                <CropIcon className="w-4 h-4" />
+                Crop
+            </DialogTrigger>
             <DialogContent className="p-0 flex flex-col items-center gap-0" hideCloseIcon>
                 <DialogHeader />
                 <div className="w-full flex items-center justify-center p-4">
