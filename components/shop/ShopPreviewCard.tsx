@@ -75,7 +75,7 @@ const ShopPreviewCard: React.FC<ShopPreviewCardProps> = ({ shop, isVendorView })
                                     <CarouselItem key={`${itemIndex}-${imageIndex}`} style={{ flex: `0 0 ${flexBasis}px` }} className='pl-1'>
                                         <NextImage
                                             src={image}
-                                            alt={image.alt}
+                                            alt={image.alt ?? `Carousel image for ${shop.name}`}
                                             width={500}
                                             height={500}
                                             className='h-full w-auto'

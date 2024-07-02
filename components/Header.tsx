@@ -8,6 +8,8 @@ import { ExitIcon, PlusIcon } from '@radix-ui/react-icons';
 import { BuildingStorefrontIcon } from '@heroicons/react/24/outline'
 import { Separator } from './ui/separator';
 import { useIsVendorRoute } from 'hooks/useIsVendorRoute';
+import SearchInput from './search/SearchInput';
+import { Button } from './ui/button';
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -35,7 +37,7 @@ const Header: React.FC = () => {
   }
 
   return (
-    <nav className='flex items-center w-full justify-between px-4 py-2 border-b sticky top-0 h-10 z-20 bg-neutral-100'>
+    <nav className='flex items-center w-full justify-between px-4 py-2 border-b sticky top-0 h-12 z-20 bg-neutral-100'>
       <Link href="/" data-active={isActive('/')} className='flex items-center gap-2'>
         <span>4o4.space</span>
         {isVendorRoute &&
@@ -46,6 +48,7 @@ const Header: React.FC = () => {
         }
       </Link>
       <div className='flex items-center gap-2'>
+        <SearchInput />
         {session &&
           <DropdownMenu>
             <DropdownMenuTrigger>
@@ -74,7 +77,9 @@ const Header: React.FC = () => {
         }
         {!session &&
           <Link href="/api/auth/signin" data-active={isActive('/signin')}>
-            Log in
+            <Button>
+              Log in
+            </Button>
           </Link>
         }
       </div>

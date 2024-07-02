@@ -1,4 +1,4 @@
-import React, { Suspense, useRef } from "react"
+import React, { useEffect, useRef } from "react"
 import { PostProps } from "../components/Post"
 import { useShops } from "../hooks/useShops";
 import { useRouter } from "next/router";
@@ -12,8 +12,12 @@ type Props = {
 
 const Home: React.FC<Props> = () => {
   const fileInput = useRef(null);
-  const { shops, loading: shopsLoading, error: shopsError } = useShops();
+  const { shops, loading: shopsLoading, error: shopsError, searchShops } = useShops();
   const router = useRouter();
+
+  useEffect(() => {
+    searchShops();
+  }, [searchShops]);
 
   return (
     <ShopperLayout>

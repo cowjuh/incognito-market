@@ -1,27 +1,23 @@
-import { useState, useEffect } from 'react';
-import { getAllShops } from '../services/api/shops';
+import { useState, useCallback } from 'react';
 import { ShopWithRelations } from 'pages/api/shop';
+import { getAllShops } from 'services/api/search';
 
 export const useShops = () => {
     const [shops, setShops] = useState<ShopWithRelations[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchShops = async () => {
-            setLoading(true);
-            try {
-                const data = await getAllShops();
-                setShops(data.shops);
-                setLoading(false);
-            } catch (error) {
-                setError(error);
-                setLoading(false);
-            }
-        };
-
-        fetchShops();
+    const searchShops = useCallback(async (term?: string, city?: string, country?: string, averageRating?: number) => {
+        setLoading(true);
+        try {
+            const data = await getAllShops({ term, city, country, averageRating });
+            setShops(data);
+            setLoading(false);
+        } catch (error) {
+            setError(error);
+            setLoading(false);
+        }
     }, []);
 
-    return { shops, loading, error };
+    return { shops, loading, error, searchShops };
 };
