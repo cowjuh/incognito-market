@@ -4,7 +4,17 @@ import { Prisma, PrismaClient, Shop } from '@prisma/client'
 const prisma = new PrismaClient()
 
 const shopWithRelations = Prisma.validator<Prisma.ShopDefaultArgs>()({
-    include: { owner: true, socialMedia: true, featuredItems: true, updates: true, shopTags: true },
+    include: {
+        owner: true,
+        socialMedia: true,
+        featuredItems: true,
+        updates: true,
+        shopTags: {
+            include: {
+                tag: true
+            }
+        }
+    },
 });
 
 export type ShopWithRelations = Prisma.ShopGetPayload<typeof shopWithRelations>;

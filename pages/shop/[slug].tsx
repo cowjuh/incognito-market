@@ -16,6 +16,7 @@ import UpdateCard from "@/shop/UpdateCard";
 import ShopOwnerBanner from "@/ShopOwnerBanner";
 import { useSession } from "next-auth/react";
 import ShopRating from "@/rating/ShopRating";
+import { Badge } from "@/ui/badge";
 
 const socialMediaIcons = {
     [SocialMediaName.INSTAGRAM]: InstagramLogoIcon,
@@ -85,6 +86,18 @@ const ShopPage: NextPageWithLayout = () => {
                                     })}
                                 </div>
                             }
+                            <div className="w-full flex flex-col gap-4">
+                                <h3 className="font-medium text-neutral-400">TAGS</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {shop.shopTags.map((tag) => {
+                                        return (
+                                            <Badge variant="outline" className="flex flex-col w-fit">
+                                                <h3 className="font-medium text-neutral-400">{tag.tag.name}</h3>
+                                            </Badge>
+                                        )
+                                    })}
+                                </div>
+                            </div>
                         </div>
                     }
                 </div>

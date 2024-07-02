@@ -44,7 +44,11 @@ export default async function handler(
                 socialMedia: true,
                 featuredItems: true,
                 updates: true,
-                shopTags: true
+                shopTags: {
+                    include: {
+                        tag: true
+                    }
+                }
             },
             orderBy: { name: 'asc' }
         });
