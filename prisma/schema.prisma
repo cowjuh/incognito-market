@@ -49,6 +49,7 @@ model User {
   sessions      Session[]
   shops         Shop[]
   ratings     Rating[]
+  followedShops ShopFollow[]
 }
 
 model VerificationToken {
@@ -141,12 +142,14 @@ model Shop {
   headerImage     String?
   averageRating   Float?
   numberOfRatings Int?
+  followersCount  Int       @default(0)
   owner           User          @relation(fields: [ownerId], references: [id])
   socialMedia     SocialMedia[]
   featuredItems   FeaturedItem[]
   updates         Update[]
   ratings         Rating[]
   shopTags        ShopTag[]
+  followers       ShopFollow[]
 }
 
 model Rating {
@@ -161,4 +164,13 @@ model Rating {
   shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
 
   @@index([userId, shopId])
+}
+
+model ShopFollow {
+  userId  String
+  shopId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shop    Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@id([userId, shopId])
 }
