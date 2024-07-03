@@ -37,7 +37,9 @@ export default async function handler(
                     owner: true,
                     socialMedia: true,
                     featuredItems: true,
-                    updates: true
+                    updates: true,
+                    followers: true,
+                    ratings: true
                 }
             });
             res.status(200).json(shops);
