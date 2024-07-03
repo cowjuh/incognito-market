@@ -48,7 +48,9 @@ export default async function handler(
                     include: {
                         tag: true
                     }
-                }
+                },
+                followers: true,
+                ratings: true
             },
             orderBy: { name: 'asc' }
         });

@@ -13,7 +13,9 @@ const shopWithRelations = Prisma.validator<Prisma.ShopDefaultArgs>()({
             include: {
                 tag: true
             }
-        }
+        },
+        followers: true,
+        ratings: true,
     },
 });
 
@@ -91,7 +93,9 @@ export default async function handler(
                         include: {
                             tag: true
                         }
-                    }
+                    },
+                    followers: true,
+                    ratings: true,
                 },
             });
             if (!shop) {
