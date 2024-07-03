@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 import { Avatar, AvatarImage } from './ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuLabel } from './ui/dropdown-menu';
-import { ExitIcon, PlusIcon } from '@radix-ui/react-icons';
+import { ExitIcon, PersonIcon, PlusIcon } from '@radix-ui/react-icons';
 import { BuildingStorefrontIcon } from '@heroicons/react/24/outline'
 import { Separator } from './ui/separator';
 import { useIsVendorRoute } from 'hooks/useIsVendorRoute';
@@ -36,6 +36,10 @@ const Header: React.FC = () => {
     }
   }
 
+  const handleMyAccount = () => {
+    router.push(`/account`);
+  }
+
   return (
     <nav className='flex items-center w-full justify-between px-4 py-2 border-b sticky top-0 h-12 z-20 bg-neutral-100'>
       <Link href="/" data-active={isActive('/')} className='flex items-center gap-2'>
@@ -59,6 +63,10 @@ const Header: React.FC = () => {
             <DropdownMenuContent className='w-72 text-sm'>
               <DropdownMenuLabel className='p-3'>{session.user.name} ({session.user.email})</DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={handleMyAccount} className='flex items-center gap-2 p-3'>
+                <PersonIcon className='w-4 h-4' />
+                <span>Account</span>
+              </DropdownMenuItem>
               <DropdownMenuItem onSelect={handleMyShops} className='flex items-center gap-2 p-3'>
                 <BuildingStorefrontIcon className='w-4 h-4' />
                 <span>Dashboard</span>
