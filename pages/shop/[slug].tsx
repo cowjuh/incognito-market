@@ -17,6 +17,10 @@ import ShopOwnerBanner from "@/ShopOwnerBanner";
 import { useSession } from "next-auth/react";
 import ShopRating from "@/rating/ShopRating";
 import { Badge } from "@/ui/badge";
+import { formatPlural } from "utils/stringUtils";
+import { Button } from "@/ui/button";
+import { followShop, unfollowShop } from "services/api/follow";
+import useIsFollowingShop from "hooks/useIsFollowingShop";
 
 const socialMediaIcons = {
     [SocialMediaName.INSTAGRAM]: InstagramLogoIcon,
@@ -31,10 +35,24 @@ const ShopPage: NextPageWithLayout = () => {
     const { slug } = router.query;
     const { shop, loading, error } = useShop(slug as string);
     const showSkeleton = !shop || loading;
+    const isShopOwner = session.data?.user?.id === shop?.ownerId;
+    const { isFollowing, loading: isFollowingLoading } = useIsFollowingShop({ shopId: shop?.id });
+
+    const handleFollowButton = async () => {
+        try {
+            if (isFollowing) {
+                await unfollowShop(session.data?.user?.id, shop.id);
+            } else {
+                await followShop(session.data?.user?.id, shop.id);
+            }
+        } catch (error) {
+            console.error('Error following shop:', error);
+        }
+    };
 
     return (
         <div className="max-w-[1500px] w-full">
-            {shop && session.data?.user?.id === shop.ownerId && <ShopOwnerBanner shop={shop} />}
+            {shop && isShopOwner && <ShopOwnerBanner shop={shop} />}
             <div className="p-4 pb-0 w-full">
                 <Link href={`/`} className="flex items-center gap-1 text-neutral-500 hover:text-neutral-700">
                     <ChevronLeftIcon className="w-4 h-4" />
@@ -51,6 +69,12 @@ const ShopPage: NextPageWithLayout = () => {
                                 <p className="text-neutral-400">@{shop.username}</p>
                                 <p>{shop.bio}</p>
                             </div>
+                            {!isShopOwner && !isFollowingLoading &&
+                                <Button
+                                    variant={isFollowing ? 'outline' : 'default'}
+                                    onClick={handleFollowButton}>{isFollowing ? 'Following' : 'Follow'}</Button>
+                            }
+                            {shop && `${formatPlural(shop.followersCount, 'follower', 'followers')}`}
                             <ShopRating averageRating={shop.averageRating} numberOfRatings={shop.numberOfRatings} />
                             <div className="flex flex-col gap-1">
                                 <h3 className="font-medium text-neutral-400">CONTACT</h3>
