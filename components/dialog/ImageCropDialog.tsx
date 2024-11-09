@@ -1,8 +1,6 @@
 import { Button } from "@/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
-import { SelectSeparator } from "@/ui/select";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/ui/dialog";
 import { Separator } from "@/ui/separator";
-import { CropIcon } from "@radix-ui/react-icons";
 import { useState, useRef } from "react";
 import ReactCrop, { centerCrop, makeAspectCrop, Crop, PixelCrop, PercentCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
@@ -10,10 +8,11 @@ import 'react-image-crop/dist/ReactCrop.css'
 interface ImageCropDialogProps {
     src: string;
     onSave: (blob: Blob) => void;
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
 }
 
-const ImageCropDialog: React.FC<ImageCropDialogProps> = ({ src, onSave }) => {
-    const [dialogOpen, setDialogOpen] = useState(false)
+const ImageCropDialog: React.FC<ImageCropDialogProps> = ({ src, onSave, open, onOpenChange }) => {
     const imgRef = useRef<HTMLImageElement>(null);
     const [crop, setCrop] = useState<Crop>({
         unit: '%',
@@ -90,16 +89,12 @@ const ImageCropDialog: React.FC<ImageCropDialogProps> = ({ src, onSave }) => {
         const croppedImageBlob = await getCroppedImg();
         if (croppedImageBlob && onSave) {
             onSave(croppedImageBlob);
-            setDialogOpen(false);
+            onOpenChange(false);
         }
     }
 
     return (
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger className="flex items-center gap-2">
-                <CropIcon className="w-4 h-4" />
-                Crop
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="p-0 flex flex-col items-center gap-0" hideCloseIcon>
                 <DialogHeader />
                 <div className="w-full flex items-center justify-center p-4">
@@ -110,7 +105,7 @@ const ImageCropDialog: React.FC<ImageCropDialogProps> = ({ src, onSave }) => {
                 <Separator />
                 <DialogFooter className="w-full flex">
                     <div className="p-4 flex flex-row items-center justify-between flex-grow">
-                        <Button variant="ghost" onClick={() => setDialogOpen(false)}>Cancel</Button>
+                        <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
                         <Button onClick={handleSave}>Save</Button>
                     </div>
                 </DialogFooter>
