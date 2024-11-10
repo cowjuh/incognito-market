@@ -20,7 +20,7 @@ import { formatPlural } from "utils/stringUtils";
 import { Button } from "@/ui/button";
 import { followShop, unfollowShop } from "services/api/follow";
 import useIsFollowingShop from "hooks/useIsFollowingShop";
-import { useShop } from "hooks/api/shops";
+import { useShop } from "hooks/api/shop";
 
 const socialMediaIcons = {
     [SocialMediaName.INSTAGRAM]: InstagramLogoIcon,

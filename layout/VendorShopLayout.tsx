@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import ShopSettingsSidebar from "@/vendor/manage/ShopSettingsSidebar";
 import FullWidthLayout from "./FullWidthLayout";
 import { cn } from "@/lib/utils";
-import { useShop } from "hooks/api/shops";
+import { useShop } from "hooks/api/shop";
 interface VendorShopLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
     children: ReactNode
 }

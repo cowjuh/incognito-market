@@ -5,7 +5,7 @@ import MainLayout from "layout/MainLayout";
 import { NextPageWithLayout } from "layout/NextPageWithLayout";
 import VendorShopLayout from "layout/VendorShopLayout";
 import { useRouter } from "next/router";
-import { useShop } from "hooks/api/shops";
+import { useShop } from "hooks/api/shop";
 import { FormMode } from "types/form";
 
 const ShopDetailsPage: NextPageWithLayout = () => {
