@@ -35,7 +35,7 @@ import { useSession } from "next-auth/react";
 import { Shop } from "@prisma/client";
 import { FormMode } from "types/form";
 import { useRouter } from "next/router";
-import { Crop } from "lucide-react";
+import { Crop, RotateCcw } from "lucide-react";
 
 type EntityFormSchema = TypeOf<typeof entityFormSchema>;
 type FormFieldName = keyof EntityFormSchema;
@@ -44,6 +44,13 @@ interface EntityEditorFormProps {
   mode: FormMode;
   entity?: Shop;
 }
+interface ImageState {
+    originalFile: File | null;
+    originalUrl: string | null;
+    croppedFile: File | null;
+    croppedUrl: string | null;
+    showCropDialog: boolean;
+  }
 
 const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
   const { data: session } = useSession();
@@ -53,10 +60,11 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
 
-  const [imageState, setImageState] = useState({
-    originalUrl: null as string | null,
+  const [imageState, setImageState] = useState<ImageState>({
+    originalFile: null,
+    originalUrl: null,
+    croppedFile: null,
     croppedUrl: mode === FormMode.EDIT ? entity?.profilePicture : null,
-    file: null as File | null,
     showCropDialog: false,
   });
 
@@ -95,11 +103,11 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
     }
   }, [form.watch("state"), form.watch("country")]);
 
+
   useEffect(() => {
     const initializeImageFromUrl = async () => {
       if (mode === FormMode.EDIT && entity?.profilePicture) {
         try {
-          // Fetch the image file from the URL
           const response = await fetch(entity.profilePicture);
           const blob = await response.blob();
           const file = new File([blob], "profilePicture.png", {
@@ -107,9 +115,10 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
           });
 
           setImageState({
+            originalFile: file,
             originalUrl: entity.profilePicture,
+            croppedFile: file,
             croppedUrl: entity.profilePicture,
-            file: file,
             showCropDialog: false,
           });
         } catch (error) {
@@ -124,22 +133,31 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
   const handleImageUpload = (file: File) => {
     const url = URL.createObjectURL(file);
     setImageState({
+      originalFile: file,
       originalUrl: url,
+      croppedFile: file,
       croppedUrl: url,
-      file: file,
       showCropDialog: true,
     });
   };
 
   const handleCrop = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // If we have a current image (either from upload or URL), use it for cropping
-    if (imageState.file) {
-      const url = URL.createObjectURL(imageState.file);
+    if (imageState.originalFile) {
       setImageState((prev) => ({
         ...prev,
-        originalUrl: url,
         showCropDialog: true,
+      }));
+    }
+  };
+
+  const handleResetToCrop = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (imageState.originalFile && imageState.originalUrl) {
+      setImageState((prev) => ({
+        ...prev,
+        croppedFile: prev.originalFile,
+        croppedUrl: prev.originalUrl,
       }));
     }
   };
@@ -149,10 +167,9 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
     const url = URL.createObjectURL(blob);
     setImageState((prev) => ({
       ...prev,
+      croppedFile: file,
       croppedUrl: url,
-      file: file,
       showCropDialog: false,
-      originalUrl: null,
     }));
   };
 
@@ -237,7 +254,7 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
     const profilePictureFileToUpload =
       mode === FormMode.EDIT && imageState.croppedUrl === entity?.profilePicture
         ? undefined
-        : imageState.file;
+        : imageState.croppedFile;
 
     await onSubmit(
       changes,
@@ -256,7 +273,7 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
         className="space-y-8 max-w-full"
       >
         <div className="flex items-start gap-16">
-          <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
             <div className="relative group">
               <div
                 className="h-36 w-36 bg-neutral-200 rounded-full relative cursor-pointer overflow-hidden"
@@ -282,14 +299,26 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
                     <span className="text-xs">Upload</span>
                   </div>
                   {imageState.croppedUrl && (
-                    <button
-                      type="button"
-                      onClick={handleCrop}
-                      className="flex flex-col items-center gap-2 text-white"
-                    >
-                      <Crop className="w-6 h-6" />
-                      <span className="text-xs">Crop</span>
-                    </button>
+                    <>
+                      <button
+                        type="button"
+                        onClick={handleCrop}
+                        className="flex flex-col items-center gap-2 text-white"
+                      >
+                        <Crop className="w-6 h-6" />
+                        <span className="text-xs">Crop</span>
+                      </button>
+                      {imageState.originalUrl !== imageState.croppedUrl && (
+                        <button
+                          type="button"
+                          onClick={handleResetToCrop}
+                          className="flex flex-col items-center gap-2 text-white"
+                        >
+                          <RotateCcw className="w-6 h-6" />
+                          <span className="text-xs">Reset</span>
+                        </button>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
