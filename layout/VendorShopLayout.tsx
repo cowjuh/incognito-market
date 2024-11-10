@@ -1,10 +1,9 @@
-import { useShop } from "hooks/useShop";
 import { useRouter } from "next/router";
 import { ReactNode } from "react";
 import ShopSettingsSidebar from "@/vendor/manage/ShopSettingsSidebar";
 import FullWidthLayout from "./FullWidthLayout";
 import { cn } from "@/lib/utils";
-
+import { useShop } from "hooks/api/shops";
 interface VendorShopLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
     children: ReactNode
 }
@@ -12,7 +11,7 @@ interface VendorShopLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
 const VendorShopLayout: React.FC<VendorShopLayoutProps> = ({ children, className }) => {
     const router = useRouter();
     const { slug } = router.query;
-    const { shop } = useShop(slug as string);
+    const { data: shop } = useShop(slug as string);
     return (
         <div className="flex w-full flex-grow divide-x">
             <ShopSettingsSidebar activeShop={shop} />

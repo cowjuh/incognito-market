@@ -1,18 +1,18 @@
 import { EntityEditorForm } from "@/vendor/entityEditor/EntityEditorForm";
 import MembersList from "@/vendor/manage/MembersList";
-import { useShop } from "hooks/useShop";
 import FullWidthLayout from "layout/FullWidthLayout";
 import MainLayout from "layout/MainLayout";
 import { NextPageWithLayout } from "layout/NextPageWithLayout";
 import VendorShopLayout from "layout/VendorShopLayout";
 import { useRouter } from "next/router";
+import { useShop } from "hooks/api/shops";
 import { FormMode } from "types/form";
 
 const ShopDetailsPage: NextPageWithLayout = () => {
     const router = useRouter();
     const { slug } = router.query;
-    const { shop, loading, error } = useShop(slug as string);
-    const showSkeleton = !shop || loading;
+    const { data: shop } = useShop(slug as string);
+    const showSkeleton = !shop;
 
     if (!shop) return null;
 

@@ -1,18 +1,18 @@
 import { Button } from "@/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/select";
 import MembersList from "@/vendor/manage/MembersList";
-import { useShop } from "hooks/useShop";
 import FullWidthLayout from "layout/FullWidthLayout";
 import MainLayout from "layout/MainLayout";
 import { NextPageWithLayout } from "layout/NextPageWithLayout";
 import VendorShopLayout from "layout/VendorShopLayout";
 import { useRouter } from "next/router";
+import { useShop } from "hooks/api/shops";
 
 const MemberShopPage: NextPageWithLayout = () => {
     const router = useRouter();
     const { slug } = router.query;
-    const { shop, loading, error } = useShop(slug as string);
-    const showSkeleton = !shop || loading;
+    const { data: shop, isLoading } = useShop(slug as string);
+    const showSkeleton = !shop || isLoading;
 
     if (!shop) return null;
 

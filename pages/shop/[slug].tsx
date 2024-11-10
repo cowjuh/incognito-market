@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { useShop } from "../../hooks/useShop";
 import MainLayout from "../../layout/MainLayout";
 import FullWidthLayout from "../../layout/FullWidthLayout";
 import { ReactNode } from "react";
@@ -21,6 +20,7 @@ import { formatPlural } from "utils/stringUtils";
 import { Button } from "@/ui/button";
 import { followShop, unfollowShop } from "services/api/follow";
 import useIsFollowingShop from "hooks/useIsFollowingShop";
+import { useShop } from "hooks/api/shops";
 
 const socialMediaIcons = {
     [SocialMediaName.INSTAGRAM]: InstagramLogoIcon,
@@ -33,7 +33,7 @@ const ShopPage: NextPageWithLayout = () => {
     const router = useRouter();
     const session = useSession();
     const { slug } = router.query;
-    const { shop, loading, error } = useShop(slug as string);
+    const { data: shop, isLoading: loading, error } = useShop(slug as string);
     const showSkeleton = !shop || loading;
     const isShopOwner = session.data?.user?.id === shop?.ownerId;
     const { isFollowing, loading: isFollowingLoading } = useIsFollowingShop({ shopId: shop?.id });
