@@ -29,13 +29,13 @@ import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 import { ImageIcon } from "@radix-ui/react-icons";
 import ImageCropDialog from "@/dialog/ImageCropDialog";
-import { onSubmit } from "utils/shopUtils";
 import TextAreaField from "@/form/TextAreaField";
 import { useSession } from "next-auth/react";
 import { Shop } from "@prisma/client";
 import { FormMode } from "types/form";
 import { useRouter } from "next/router";
 import { Crop, RotateCcw } from "lucide-react";
+import { useSubmitShop } from "hooks/api/submitShop";
 
 type EntityFormSchema = TypeOf<typeof entityFormSchema>;
 type FormFieldName = keyof EntityFormSchema;
@@ -59,6 +59,8 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
+
+  const { mutate: submitShop } = useSubmitShop();
 
   const [imageState, setImageState] = useState<ImageState>({
     originalFile: null,
@@ -256,14 +258,18 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
         ? undefined
         : imageState.croppedFile;
 
-    await onSubmit(
-      changes,
-      profilePictureFileToUpload,
-      session.user.id,
-      mode,
-      entity?.id
-    );
-    router.push(`/vendor/shops`);
+    submitShop({
+        values: changes,
+        profilePictureFile: profilePictureFileToUpload,
+        userId: session.user.id,
+        mode,
+        shopId: entity?.id
+    }, {
+        onSuccess: () => {
+
+            router.push(`/vendor/shops`);
+        }
+    });
   };
 
   return (
