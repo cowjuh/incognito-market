@@ -5,7 +5,6 @@ import { useUserShops } from "hooks/useUserShops";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Avatar from "@/Avatar";
-import { Skeleton } from "@/ui/skeleton";
 
 interface ShopSettingsSidebarProps {
     activeShop?: Shop;
