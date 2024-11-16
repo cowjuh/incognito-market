@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/ui/select";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Country, State, City } from "country-state-city";
 import { isFieldRequired, isFieldTextArea } from "utils/zod/zodUtils";
 import InputField from "@/form/InputField";
@@ -36,6 +36,13 @@ import { FormMode } from "types/form";
 import { useRouter } from "next/router";
 import { Crop, RotateCcw } from "lucide-react";
 import { useSubmitShop } from "hooks/api/submitShop";
+import dynamic from 'next/dynamic';
+
+const LocationSelector = dynamic(() => import('./LocationSelector'), {
+  ssr: false,
+  loading: () => <div>Loading location selector...</div>
+});
+
 
 type EntityFormSchema = TypeOf<typeof entityFormSchema>;
 type FormFieldName = keyof EntityFormSchema;
@@ -55,12 +62,10 @@ interface ImageState {
 const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
   const { data: session } = useSession();
   const router = useRouter();
-
-  const [countries, setCountries] = useState([]);
-  const [states, setStates] = useState([]);
-  const [cities, setCities] = useState([]);
-
   const { mutate: submitShop } = useSubmitShop();
+
+  // Memoize location data
+  const countries = useMemo(() => Country.getAllCountries(), []);
 
   const [imageState, setImageState] = useState<ImageState>({
     originalFile: null,
@@ -70,42 +75,63 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
     showCropDialog: false,
   });
 
-  const defaultValues: EntityFormSchema =
-    mode === FormMode.EDIT && entity
-      ? entity
-      : {
-          name: "",
-          username: "",
-          email: "",
-          phoneNumber: "",
-        };
+  // Initialize form with proper default values
+  const defaultValues = useMemo(() => {
+    if (mode === FormMode.EDIT && entity) {
+      return {
+        name: entity.name || "",
+        username: entity.username || "",
+        email: entity.email || "",
+        phoneNumber: entity.phoneNumber || "",
+        websiteLink: entity.websiteLink || "",
+        bio: entity.bio || "",
+        description: entity.description || "",
+        physicalAddress: entity.physicalAddress || "",
+        country: entity.country || "",
+        state: entity.state || "",
+        city: entity.city || "",
+      };
+    }
+    return {
+      name: "",
+      username: "",
+      email: "",
+      phoneNumber: "",
+      websiteLink: "",
+      bio: "",
+      description: "",
+      physicalAddress: "",
+      country: "",
+      state: "",
+      city: "",
+    };
+  }, [mode, entity]);
 
   const form = useForm<z.infer<typeof entityFormSchema>>({
     resolver: zodResolver(entityFormSchema),
     defaultValues,
+    // Change validation behavior
+    mode: "onTouched", // Only validate on blur after first touch
+    reValidateMode: "onBlur", // Only revalidate on blur
+    criteriaMode: "firstError", // Stop validation after first error
+    shouldFocusError: false, // Prevent automatic focus on error fields
+    // Reduce re-renders
+    shouldUnregister: false,
   });
 
-  // Location data effects
-  useEffect(() => {
-    setCountries(Country.getAllCountries());
-  }, []);
-
-  useEffect(() => {
+  // Memoize states and cities based on selected country/state
+  const states = useMemo(() => {
     const country = form.watch("country");
-    if (country) {
-      setStates(State.getStatesOfCountry(country));
-    }
+    return country ? State.getStatesOfCountry(country) : [];
   }, [form.watch("country")]);
 
-  useEffect(() => {
+  const cities = useMemo(() => {
     const state = form.watch("state");
     const country = form.watch("country");
-    if (state && country) {
-      setCities(City.getCitiesOfState(country, state));
-    }
+    return state && country ? City.getCitiesOfState(country, state) : [];
   }, [form.watch("state"), form.watch("country")]);
 
-
+  // Image handling
   useEffect(() => {
     const initializeImageFromUrl = async () => {
       if (mode === FormMode.EDIT && entity?.profilePicture) {
@@ -132,7 +158,7 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
     initializeImageFromUrl();
   }, [mode, entity]);
 
-  const handleImageUpload = (file: File) => {
+  const handleImageUpload = useCallback((file: File) => {
     const url = URL.createObjectURL(file);
     setImageState({
       originalFile: file,
@@ -141,9 +167,9 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
       croppedUrl: url,
       showCropDialog: true,
     });
-  };
+  }, []);
 
-  const handleCrop = (e: React.MouseEvent) => {
+  const handleCrop = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     if (imageState.originalFile) {
       setImageState((prev) => ({
@@ -151,9 +177,9 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
         showCropDialog: true,
       }));
     }
-  };
+  }, [imageState.originalFile]);
 
-  const handleResetToCrop = (e: React.MouseEvent) => {
+  const handleResetToCrop = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     if (imageState.originalFile && imageState.originalUrl) {
       setImageState((prev) => ({
@@ -162,9 +188,9 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
         croppedUrl: prev.originalUrl,
       }));
     }
-  };
+  }, [imageState.originalFile, imageState.originalUrl]);
 
-  const handleSaveImage = async (blob: Blob) => {
+  const handleSaveImage = useCallback(async (blob: Blob) => {
     const file = new File([blob], "profilePicture.png", { type: "image/png" });
     const url = URL.createObjectURL(blob);
     setImageState((prev) => ({
@@ -173,18 +199,54 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
       croppedUrl: url,
       showCropDialog: false,
     }));
-  };
+  }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop: (acceptedFiles) => {
+    onDrop: useCallback((acceptedFiles) => {
       if (acceptedFiles.length > 0) {
         handleImageUpload(acceptedFiles[0]);
       }
-    },
+    }, [handleImageUpload]),
+    maxFiles: 1,
   });
 
-  // Form sections configuration
-  const formSections = [
+  const onSubmit = useCallback(async (values: z.infer<typeof entityFormSchema>) => {
+    if (!session?.user) {
+      console.error("User not logged in");
+      return;
+    }
+
+    // Only include changed values
+    const changes = Object.entries(values).reduce((acc, [key, value]) => {
+      if (value !== defaultValues[key]) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+
+    const profilePictureFileToUpload =
+      mode === FormMode.EDIT && imageState.croppedUrl === entity?.profilePicture
+        ? undefined
+        : imageState.croppedFile;
+
+    submitShop(
+      {
+        values: changes,
+        profilePictureFile: profilePictureFileToUpload,
+        userId: session.user.id,
+        mode,
+        shopId: entity?.id,
+      },
+      {
+        onSuccess: () => {
+          router.push(`/vendor/shops`);
+        },
+      }
+    );
+  }, [session, mode, entity, imageState, defaultValues, submitShop, router]);
+
+  // Memoize form sections configuration
+  const formSections = useMemo(() => [
     {
       title: "Basic Information",
       fields: [
@@ -238,7 +300,7 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
         },
       ],
     },
-  ] as const;
+  ] as const, []);
 
   const handleSubmit = async (values: z.infer<typeof entityFormSchema>) => {
     if (!session?.user) {
@@ -276,7 +338,7 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-8 max-w-full"
+        className="space-y-8 max-w-[500px] w-full"
       >
         <div className="flex items-start gap-16">
         <div className="flex flex-col gap-4">
@@ -385,107 +447,7 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
                 </div>
               </div>
             ))}
-
-            {/* Location Fields */}
-            <div className="flex items-center gap-3 flex-grow">
-              <FormField
-                control={form.control}
-                name="country"
-                render={({ field }) => (
-                  <FormItem className="flex-grow">
-                    <FormLabel>Country</FormLabel>
-                    <Select
-                      value={field.value}
-                      onValueChange={(val) => form.setValue("country", val)}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a country" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {countries.map((country) => (
-                          <SelectItem
-                            key={country.isoCode}
-                            value={country.isoCode}
-                          >
-                            {country.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>Select your country.</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="state"
-                render={({ field }) => (
-                  <FormItem className="flex-grow">
-                    <FormLabel>State/Province</FormLabel>
-                    <Select
-                      value={field.value}
-                      onValueChange={(val) => {
-                        form.setValue("state", val);
-                        setCities([]);
-                      }}
-                      defaultValue={field.value}
-                      disabled={!form.watch("country")}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a state/province" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {states.map((state) => (
-                          <SelectItem key={state.isoCode} value={state.isoCode}>
-                            {state.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      Select your state/province.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="city"
-                render={({ field }) => (
-                  <FormItem className="flex-grow">
-                    <FormLabel>City</FormLabel>
-                    <Select
-                      value={field.value}
-                      onValueChange={(val) => form.setValue("city", val)}
-                      defaultValue={field.value}
-                      disabled={!form.watch("state")}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a city" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {cities.map((city) => (
-                          <SelectItem key={city.name} value={city.name}>
-                            {city.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>Select your city.</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <LocationSelector />
           </div>
         </div>
         <Button type="submit">
