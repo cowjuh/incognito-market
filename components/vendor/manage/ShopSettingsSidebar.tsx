@@ -5,9 +5,10 @@ import { useUserShops } from "hooks/useUserShops";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Avatar from "@/Avatar";
+import { Skeleton } from "@/ui/skeleton";
 
 interface ShopSettingsSidebarProps {
-    activeShop: Shop;
+    activeShop?: Shop;
 }
 
 export default function ShopSettingsSidebar({ activeShop }: ShopSettingsSidebarProps) {
@@ -20,40 +21,73 @@ export default function ShopSettingsSidebar({ activeShop }: ShopSettingsSidebarP
         router.push(`${basePath}${shopId}`);
     };
 
+    const isLinkDisabled = !shops.length || shopsLoading || !activeShop;
+
     return (
         <nav className="flex flex-col gap-4 text-sm text-muted-foreground flex-grow max-w-[400px] min-w-[250px] p-4">
-            {activeShop &&
-                <>
-                    <Select onValueChange={handleOnShopChange} value={activeShop.id}>
-                        <SelectTrigger>
-                            <SelectValue placeholder={activeShop.name}>
+            {/* Shop selector - show even if activeShop isn't loaded yet */}
+            <Select 
+                onValueChange={handleOnShopChange} 
+                value={activeShop?.id} 
+                disabled={!shops.length}
+            >
+                <SelectTrigger>
+                    <SelectValue placeholder="Select a shop">
+                        {activeShop && (
+                            <div className="flex items-center gap-2 h-7">
+                                <Avatar src={activeShop.profilePicture} alt={activeShop.name} className="w-5 h-5" />
+                                {activeShop.name}
+                            </div>
+                        )}
+                    </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectGroup>
+                        <SelectLabel>Select a shop</SelectLabel>
+                        {shops.map((shop) => (
+                            <SelectItem key={shop.id} value={shop.id}>
                                 <div className="flex items-center gap-2 h-7">
-                                    <Avatar src={activeShop.profilePicture} alt={activeShop.name} className="w-5 h-5" />
-                                    {activeShop.name}
+                                    <Avatar src={shop.profilePicture} alt={shop.name} className="w-5 h-5" />
+                                    {shop.name}
                                 </div>
-                            </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel>Select a shop</SelectLabel>
-                                {shops.map((shop) => (
-                                    <SelectItem key={shop.id} value={shop.id}>
-                                        <div className="flex items-center gap-2 h-7">
-                                            <Avatar src={shop.profilePicture} alt={shop.name} className="w-5 h-5" />
-                                            {shop.name}
-                                        </div>
-                                    </SelectItem>
-                                ))}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                    <NavLink href={`/vendor/shop/dashboard/${activeShop.id}`}>Dashboard</NavLink>
-                    <NavLink href={`/vendor/shop/details/${activeShop.id}`}>Details</NavLink>
-                    <NavLink href={`/vendor/shop/updates/${activeShop.id}`} >Updates</NavLink>
-                    <NavLink href={`/vendor/shop/members/${activeShop.id}`}>Members</NavLink>
-                    <NavLink href={`/vendor/shop/events/${activeShop.id}`} isDisabled>Events</NavLink>
-                </>
-            }
+                            </SelectItem>
+                        ))}
+                    </SelectGroup>
+                </SelectContent>
+            </Select>
+
+            {/* Navigation links - disabled if no active shop */}
+            <NavLink 
+                href={activeShop ? `/vendor/shop/dashboard/${activeShop.id}` : "#"}
+                isDisabled={isLinkDisabled}
+            >
+                Dashboard
+            </NavLink>
+            <NavLink 
+                href={activeShop ? `/vendor/shop/details/${activeShop.id}` : "#"}
+                isDisabled={isLinkDisabled}
+            >
+                Details
+            </NavLink>
+            <NavLink 
+                href={activeShop ? `/vendor/shop/updates/${activeShop.id}` : "#"}
+                isDisabled={isLinkDisabled}
+            >
+                Updates
+            </NavLink>
+            <NavLink 
+                href={activeShop ? `/vendor/shop/members/${activeShop.id}` : "#"}
+                isDisabled={isLinkDisabled}
+            >
+                Members
+            </NavLink>
+            <NavLink 
+                href={activeShop ? `/vendor/shop/events/${activeShop.id}` : "#"}
+                isDisabled
+                isComingSoon
+            >
+                Events
+            </NavLink>
         </nav>
     );
 }

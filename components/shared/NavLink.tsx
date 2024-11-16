@@ -6,9 +6,10 @@ interface NavLinkProps {
     href: string;
     children: React.ReactNode;
     isDisabled?: boolean;
+    isComingSoon?: boolean;
 }
 
-const NavLink: React.FC<NavLinkProps> = ({ href, children, isDisabled }) => {
+const NavLink: React.FC<NavLinkProps> = ({ href, children, isDisabled, isComingSoon }) => {
     const router = useRouter();
     const isActive = router.asPath.startsWith(href);
 
@@ -21,7 +22,7 @@ const NavLink: React.FC<NavLinkProps> = ({ href, children, isDisabled }) => {
             <Link href={href} className={cn('transition-colors duration-150 ease-in-out', linkClass, isDisabled && 'text-neutral-300 hover:text-neutral-300')}>
                 {children}
             </Link>
-            {isDisabled && <div className="bg-neutral-200 rounded-full px-2 py-1 text-xs font-medium text-neutral-500">Coming soon</div>}
+            {isComingSoon && <div className="bg-neutral-200 rounded-full px-2 py-1 text-xs font-medium text-neutral-500">Coming soon</div>}
         </div>
     );
 };
