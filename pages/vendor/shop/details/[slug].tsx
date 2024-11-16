@@ -24,7 +24,7 @@ const ShopDetailsPage: NextPageWithLayout = () => {
                     <p className="text-sm text-muted-foreground">Edit shop details</p>
                 </div>
             </div>
-            <div className="p-4 pt-0 flex items-center">
+            <div className="p-4 pt-0 flex items-center w-full">
                 <EntityEditorForm mode={FormMode.EDIT} entity={shop} key={shop.id} />
             </div>
         </div>
