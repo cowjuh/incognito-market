@@ -6,20 +6,8 @@ import { entityFormSchema } from "forms/entityForm";
 import { TypeOf, z } from "zod";
 import {
   Form,
-  FormControl,
-  FormDescription,
   FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/ui/select";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Country, State, City } from "country-state-city";
 import { isFieldRequired, isFieldTextArea } from "utils/zod/zodUtils";
@@ -308,9 +296,11 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
       return;
     }
 
-    const changes = Object.keys(values).reduce((acc, key) => {
-      if (values[key] !== defaultValues[key]) {
-        acc[key] = values[key];
+    // Create a properly typed changes object
+    const changes = Object.entries(values).reduce((acc: Record<string, any>, [key, value]) => {
+      // Include field if it's different from default or if it's explicitly undefined/null
+      if (value !== defaultValues[key] || value === undefined || value === null) {
+        acc[key] = value;
       }
       return acc;
     }, {});
@@ -328,11 +318,10 @@ const EntityEditorForm = ({ mode, entity }: EntityEditorFormProps) => {
         shopId: entity?.id
     }, {
         onSuccess: () => {
-
             router.push(`/vendor/shops`);
         }
     });
-  };
+};
 
   return (
     <Form {...form}>
