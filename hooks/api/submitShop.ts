@@ -11,7 +11,7 @@ import axios from 'axios';
 
 interface SubmitShopParams {
   values: TypeOf<typeof entityFormSchema>;
-  profilePictureFile: File | null;
+  profilePictureFile: File | null | undefined;
   userId: string;
   mode: FormMode;
   shopId?: string;
@@ -55,14 +55,20 @@ export const useSubmitShop = () => {
       shopId 
     }: SubmitShopParams) => {
       // Handle file upload if provided
-      let profilePicturePublicURL = '';
+      let profilePicturePublicURL = undefined;
       if (profilePictureFile) {
         profilePicturePublicURL = await uploadFileToStorage(profilePictureFile);
       }
 
+      // Transform undefined values to null for the database
+      const transformedValues = Object.entries(values).reduce((acc, [key, value]) => {
+        acc[key] = value === undefined ? null : value;
+        return acc;
+      }, {} as Record<string, any>);
+
       // Prepare shop data
       const shopData: Partial<ShopWithRelations> = {
-        ...values,
+        ...transformedValues,
         ...(profilePicturePublicURL && { profilePicture: profilePicturePublicURL })
       };
 
