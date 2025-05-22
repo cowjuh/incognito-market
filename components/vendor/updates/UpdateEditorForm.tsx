@@ -93,7 +93,6 @@ const UpdateEditorForm: React.FC<UpdateEditorFormProps> = ({ shopId, onCancel, o
                                     label="Description"
                                     placeholder="ie: the 4o4.space website is live!"
                                     isRequired={true}
-                                    error={errors.content?.message}
                                 />
                             )}
                         />
