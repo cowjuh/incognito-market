@@ -15,15 +15,14 @@ const Home: React.FC<Props> = () => {
   const { shops, loading: shopsLoading, error: shopsError, searchShops } = useShops();
   const router = useRouter();
 
-  // useEffect(() => {
-  //   searchShops();
-  // }, [searchShops]);
+  useEffect(() => {
+    searchShops();
+  }, [searchShops]);
 
   return (
-    // <ShopperLayout>
+    <ShopperLayout>
       <div className="flex flex-col p-4 gap-2 w-full">
-        Coming soon...
-        {/* <div className=" text-neutral-400">
+        <div className=" text-neutral-400">
           {!shopsLoading && formatPlural(shops.length, 'shop', 'shops')}
           {shopsLoading && 'Loading shops...'}
         </div>
@@ -35,9 +34,9 @@ const Home: React.FC<Props> = () => {
             <div>Loading...</div>
 
           }
-        </div> */}
+        </div>
       </div>
-    // </ShopperLayout>
+    </ShopperLayout>
   )
 }
 
